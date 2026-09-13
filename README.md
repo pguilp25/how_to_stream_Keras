@@ -10,9 +10,13 @@ One callback, standard library HTTP server, no extra dependencies beyond Keras +
 
 ```bash
 python3 -m venv ~/keras-env
+~/keras-env/bin/pip install --upgrade pip   # required: older pip (e.g. Debian 12's 23.0) fails on the torch index
 ~/keras-env/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu   # or a CUDA build
 ~/keras-env/bin/pip install keras numpy
 ```
+
+(`pip install -r requirements.txt` also works, but plain `torch` from PyPI is the large CUDA build on Linux.)
+Tested with Python 3.11, Keras 3.15.1, torch 2.14.0.
 
 Use the torch backend (`KERAS_BACKEND=torch`) if you want gradients; see [Gradients](#gradients).
 
