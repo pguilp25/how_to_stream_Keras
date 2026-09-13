@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keras Live Run</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --line:#262a33; --text:#e6e8ee; --dim:#8a90a0; --a:#5aa9ff; --b:#ffb454; --c:#7ad48a; --d:#f07178; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--text); font:13px/1.4 ui-sans-serif,system-ui,sans-serif; }
+  header { display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; margin-bottom:12px; }
+  h1 { font-size:16px; margin:0; }
+  .kv { color:var(--dim); } .kv b { color:var(--text); font-variant-numeric:tabular-nums; font-weight:600; }
+  #status { padding:2px 8px; border-radius:10px; background:var(--line); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(420px,1fr)); gap:12px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 12px; min-width:0; }
+  .panel h2 { font-size:12px; font-weight:600; color:var(--dim); margin:0 0 6px; text-transform:uppercase; letter-spacing:.04em; }
+  canvas { width:100%; height:200px; display:block; }
+  .legend { display:flex; flex-wrap:wrap; gap:2px 10px; font-size:11px; color:var(--dim); margin-top:4px; }
+  .legend i { display:inline-block; width:10px; height:2px; vertical-align:middle; margin-right:4px; }
+  select { background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:4px; padding:2px 4px; max-width:100%; }
+  .scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; }
+  td, th { padding:3px 6px; border-bottom:1px solid var(--line); text-align:right; white-space:nowrap; }
+  td:first-child, th:first-child { text-align:left; } th { color:var(--dim); font-weight:500; }
+  @media (max-width:480px) { .grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="name">waiting for run…</h1>
+  <span id="status">connecting</span>
+  <span class="kv">epoch <b id="epoch">–</b></span>
+  <span class="kv">step <b id="step">–</b></span>
+  <span class="kv">loss <b id="loss">–</b></span>
+  <span class="kv">lr <b id="lr">–</b></span>
+  <span class="kv">steps/s <b id="sps">–</b></span>
+  <span class="kv">params <b id="params">–</b></span>
+  <span class="kv">backend <b id="backend">–</b></span>
+</header>
+<div class="grid">
+  <div class="panel"><h2>Loss</h2><canvas id="c-loss"></canvas><div class="legend" id="l-loss"></div></div>
+  <div class="panel"><h2>Metrics</h2><canvas id="c-metrics"></canvas><div class="legend" id="l-metrics"></div></div>
+  <div class="panel"><h2>Learning rate</h2><canvas id="c-lr"></canvas></div>
+  <div class="panel"><h2>Global gradient L2 (pre-clip)</h2><canvas id="c-gnorm"></canvas></div>
+  <div class="panel"><h2>Gradient L2 per variable (log)</h2><canvas id="c-grad"></canvas><div class="legend" id="l-grad"></div></div>
+  <div class="panel"><h2>Update / weight ratio per variable (log)</h2><canvas id="c-ratio"></canvas><div class="legend" id="l-ratio"></div></div>
+  <div class="panel"><h2>Histogram <select id="hist-var"></select> <span id="hist-step" class="kv"></span></h2>
+    <canvas id="c-hw"></canvas><div class="legend"><span><i style="background:var(--a)"></i>weights</span></div>
+    <canvas id="c-hg"></canvas><div class="legend"><span><i style="background:var(--b)"></i>gradients</span></div></div>
+  <div class="panel"><h2>Activations on probe batch <span id="act-step" class="kv"></span></h2>
+    <div class="scroll"><table id="act"></table></div></div>
+  <div class="panel"><h2>Layers</h2><div class="scroll"><table id="layers"></table></div></div>
+</div>
+<script>
+const PALETTE = ["#5aa9ff","#ffb454","#7ad48a","#f07178","#c792ea","#89ddff","#f78c6c","#c3e88d","#ff5370","#82aaff","#ffcb6b","#b2ccd6"];
+const $ = id => document.getElementById(id);
+const fmt = v => v == null ? "–" : Math.abs(v) >= 1e4 || (Math.abs(v) < 1e-3 && v !== 0) ? v.toExponential(2) : +v.toPrecision(4);
+
+let S; // all state for the current run
+function reset(run) {
+  S = { run, series: {}, epochs: [], lastStats: null, hists: null, act: null, lastT: 0 };
+  $("name").textContent = run.model_name;
+  $("backend").textContent = run.backend + " · keras " + run.keras_version;
+  $("params").textContent = run.total_params.toLocaleString();
+  $("layers").innerHTML = "<tr><th>layer</th><th>class</th><th>output</th><th>params</th></tr>" +
+    run.layers.map(l => `<tr><td>${l.name}</td><td>${l.class}</td><td>${JSON.stringify(l.output_shape)}</td><td>${(l.params ?? 0).toLocaleString()}</td></tr>`).join("");
+  $("status").textContent = "training";
+}
+const push = (key, x, y) => { if (y != null) (S.series[key] ??= []).push([x, y]); };
+
+function handle(ev) {
+  if (ev.type === "run_begin") { reset(ev); dirty = true; return; }
+  if (!S || ev.t <= S.lastT && ev.type !== "run_begin") return; // dedupe backlog vs stream
+  S.lastT = ev.t;
+  switch (ev.type) {
+    case "batch":
+      for (const [k, v] of Object.entries(ev.logs_step)) push("m:" + k, ev.step, v);
+      push("lr", ev.step, ev.lr);
+      $("epoch").textContent = `${ev.epoch + 1}/${S.run.params.epochs}`;
+      $("step").textContent = ev.step; $("loss").textContent = fmt(ev.logs_step.loss);
+      $("lr").textContent = fmt(ev.lr); $("sps").textContent = fmt(ev.steps_per_sec);
+      break;
+    case "stats":
+      push("gnorm", ev.step, ev.global_grad_l2);
+      for (const [p, s] of Object.entries(ev.variables)) {
+        push("g:" + p, ev.step, s.grad_l2); push("r:" + p, ev.step, s.update_ratio);
+      }
+      break;
+    case "epoch_end":
+      S.epochs.push(ev);
+      for (const [k, v] of Object.entries(ev.logs)) if (k.startsWith("val_")) push("m:" + k, S.series["m:loss"]?.at(-1)?.[0] ?? ev.epoch, v);
+      break;
+    case "hist": S.hists = ev; syncHistSelect(); break;
+    case "activations": S.act = ev; break;
+    case "run_end": $("status").textContent = `done in ${fmt(ev.seconds)}s`; break;
+  }
+  dirty = true;
+}
+
+function chart(canvas, series, { log = false } = {}) {
+  const dpr = devicePixelRatio || 1, W = canvas.clientWidth, H = canvas.clientHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  const g = canvas.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+  const tf = v => log ? Math.log10(Math.max(v, 1e-12)) : v;
+  const pts = series.flatMap(s => s.data).filter(p => p[1] != null && isFinite(p[1]));
+  if (!pts.length) return;
+  let x0 = Math.min(...pts.map(p => p[0])), x1 = Math.max(...pts.map(p => p[0]));
+  let y0 = Math.min(...pts.map(p => tf(p[1]))), y1 = Math.max(...pts.map(p => tf(p[1])));
+  if (x1 === x0) x1 = x0 + 1; if (y1 === y0) { y0 -= 0.5; y1 += 0.5; }
+  const L = 52, R = 8, T = 6, B = 18;
+  const X = x => L + (x - x0) / (x1 - x0) * (W - L - R), Y = y => T + (1 - (tf(y) - y0) / (y1 - y0)) * (H - T - B);
+  g.font = "10px system-ui"; g.fillStyle = "#8a90a0"; g.strokeStyle = "#262a33";
+  for (let i = 0; i <= 4; i++) {
+    const yv = y0 + (y1 - y0) * i / 4, py = T + (1 - i / 4) * (H - T - B);
+    g.beginPath(); g.moveTo(L, py); g.lineTo(W - R, py); g.stroke();
+    g.fillText(fmt(log ? 10 ** yv : yv), 2, py + 3);
+  }
+  g.fillText(x0, L, H - 4); g.fillText(x1, W - R - g.measureText(String(x1)).width, H - 4);
+  for (const s of series) {
+    g.strokeStyle = s.color; g.lineWidth = s.width || 1.25; g.beginPath();
+    let first = true;
+    for (const [x, y] of s.data) { if (y == null) continue; first ? g.moveTo(X(x), Y(y)) : g.lineTo(X(x), Y(y)); first = false; }
+    g.stroke();
+    if (s.dots) { g.fillStyle = s.color; for (const [x, y] of s.data) { g.beginPath(); g.arc(X(x), Y(y), 3, 0, 7); g.fill(); } }
+  }
+}
+function legend(el, series) { el.innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.label}</span>`).join(""); }
+function smooth(data, a = 0.9) { let m; return data.map(([x, y]) => [x, m = m == null ? y : a * m + (1 - a) * y]); }
+function bars(canvas, h, color) {
+  const dpr = devicePixelRatio || 1, W = canvas.clientWidth, H = canvas.clientHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  const g = canvas.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+  if (!h) { g.fillStyle = "#8a90a0"; g.fillText("no data (gradients need the torch backend)", 8, 20); return; }
+  const max = Math.max(...h.counts), n = h.counts.length, bw = (W - 16) / n;
+  g.fillStyle = color;
+  h.counts.forEach((c, i) => { const bh = c / max * (H - 20); g.fillRect(8 + i * bw, H - 14 - bh, Math.max(bw - 1, 1), bh); });
+  g.fillStyle = "#8a90a0"; g.font = "10px system-ui";
+  g.fillText(fmt(h.edges[0]), 8, H - 2); const r = String(fmt(h.edges.at(-1))); g.fillText(r, W - 8 - g.measureText(r).width, H - 2);
+}
+function syncHistSelect() {
+  const sel = $("hist-var"), keys = Object.keys(S.hists.variables);
+  if (sel.options.length !== keys.length) sel.innerHTML = keys.map(k => `<option>${k}</option>`).join("");
+}
+$("hist-var").onchange = () => dirty = true;
+
+function render() {
+  if (!S) return;
+  const col = i => PALETTE[i % PALETTE.length];
+  const ms = S.series;
+  const lossSeries = [
+    { label: "loss (raw)", data: ms["m:loss"] || [], color: "#5aa9ff55" },
+    { label: "loss (EMA)", data: smooth(ms["m:loss"] || []), color: "#5aa9ff", width: 2 },
+    { label: "val_loss", data: ms["m:val_loss"] || [], color: "#ffb454", width: 2, dots: true },
+  ];
+  chart($("c-loss"), lossSeries); legend($("l-loss"), lossSeries);
+  const metricKeys = Object.keys(ms).filter(k => k.startsWith("m:") && !k.endsWith("loss"));
+  const metricSeries = metricKeys.map((k, i) => ({ label: k.slice(2), data: k.includes("val_") ? ms[k] : smooth(ms[k]), color: col(i + 1), width: 2, dots: k.includes("val_") }));
+  chart($("c-metrics"), metricSeries); legend($("l-metrics"), metricSeries);
+  chart($("c-lr"), [{ data: ms.lr || [], color: "#7ad48a", width: 2 }]);
+  chart($("c-gnorm"), [{ data: ms.gnorm || [], color: "#f07178", width: 2 }]);
+  for (const [pre, id] of [["g:", "grad"], ["r:", "ratio"]]) {
+    const s = Object.keys(ms).filter(k => k.startsWith(pre)).map((k, i) => ({ label: k.slice(2).split("/").slice(1).join("/"), data: ms[k], color: col(i) }));
+    chart($("c-" + id), s, { log: true }); legend($("l-" + id), s);
+  }
+  if (S.hists) {
+    const v = S.hists.variables[$("hist-var").value] || Object.values(S.hists.variables)[0];
+    $("hist-step").textContent = "@ step " + S.hists.step;
+    bars($("c-hw"), v.weights, "#5aa9ff"); bars($("c-hg"), v.grads, "#ffb454");
+  }
+  if (S.act) {
+    $("act-step").textContent = "@ step " + S.act.step;
+    $("act").innerHTML = "<tr><th>layer</th><th>mean</th><th>std</th><th>min</th><th>max</th><th>% zero</th></tr>" +
+      Object.entries(S.act.layers).map(([n, a]) => `<tr><td>${n}</td><td>${fmt(a.mean)}</td><td>${fmt(a.std)}</td><td>${fmt(a.min)}</td><td>${fmt(a.max)}</td><td>${(a.frac_zero * 100).toFixed(1)}</td></tr>`).join("");
+  }
+}
+let dirty = false;
+(function loop() { if (dirty) { dirty = false; render(); } setTimeout(() => requestAnimationFrame(loop), 250); })();
+addEventListener("resize", () => dirty = true);
+
+// Subscribe first and buffer, then replay the backlog, so nothing between the two is lost.
+const buffered = []; let live = false;
+const es = new EventSource("/api/stream");
+es.onmessage = m => { const ev = JSON.parse(m.data); live ? handle(ev) : buffered.push(ev); };
+es.onerror = () => { $("status").textContent = "disconnected (retrying)"; };
+es.onopen = async () => {
+  const st = await (await fetch("/api/state")).json();
+  if (st.run) { handle(st.run); st.events.forEach(handle); }
+  buffered.forEach(handle); buffered.length = 0; live = true;
+  if (S && !st.events.some(e => e.type === "run_end")) $("status").textContent = "training";
+};
+</script>
+</body>
+</html>
