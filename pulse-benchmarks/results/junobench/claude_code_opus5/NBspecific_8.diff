@@ -1,0 +1,11 @@
+--- /home/paul/junobench/runs_cc/NBspecific_8.original.py	2026-09-15 18:07:12.464863389 -0400
++++ /home/paul/junobench/runs_cc/NBspecific_8/notebook.py	2026-09-15 18:10:27.563210477 -0400
+@@ -71,8 +71,3 @@
+ from sklearn.preprocessing import StandardScaler
+ df['scaled_Amount'] = StandardScaler().fit_transform(df['Amount'].values.reshape(-1,1))
+ df = df.drop(['Amount'],axis=1)
+-
+-# %%
+-from sklearn.preprocessing import StandardScaler
+-df['scaled_Amount'] = StandardScaler().fit_transform(df['Amount'].values.reshape(-1,1))
+-df = df.drop(['Amount'],axis=1)

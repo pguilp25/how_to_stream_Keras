@@ -1,0 +1,202 @@
+[
+  {
+    "case": "linear_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      2169.66015625,
+      2169.66015625,
+      2169.66015625
+    ],
+    "base_scores": [
+      4.035531446788809e-07,
+      5.308285366822929e-08,
+      0.00017292896518483758
+    ],
+    "buggy_scores": [
+      2169.418212890625,
+      2169.5087890625,
+      2169.618408203125
+    ]
+  },
+  {
+    "case": "multilabel_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "acc",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.8856250047683716,
+      0.8375000059604645,
+      0.8137499988079071
+    ],
+    "base_scores": [
+      0.9543749988079071,
+      0.9668749868869781,
+      0.9918749928474426
+    ],
+    "buggy_scores": [
+      0.6424999833106995,
+      0.6800000071525574,
+      0.6937499940395355
+    ]
+  },
+  {
+    "case": "multilabel_loss",
+    "category": "Loss",
+    "operator": "FLC",
+    "metric": "acc",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.804375022649765,
+      0.9962500035762787,
+      0.7699999809265137
+    ],
+    "base_scores": [
+      0.9543749988079071,
+      0.9668749868869781,
+      0.9918749928474426
+    ],
+    "buggy_scores": [
+      0.37312498688697815,
+      0.5481249988079071,
+      0.3687500059604645
+    ]
+  },
+  {
+    "case": "sumsign_dropout",
+    "category": "Regularization",
+    "operator": "SRC_RCD",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.09853766113519669,
+      0.06096716970205307,
+      0.0955706536769867
+    ],
+    "base_scores": [
+      0.16537460684776306,
+      0.18052899837493896,
+      0.20320764183998108
+    ],
+    "buggy_scores": [
+      Infinity,
+      Infinity,
+      Infinity
+    ]
+  },
+  {
+    "case": "sumsign_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    "base_scores": [
+      0.16537460684776306,
+      0.18052899837493896,
+      0.20320764183998108
+    ],
+    "buggy_scores": [
+      0.6972975730895996,
+      0.6936786770820618,
+      0.6956299543380737
+    ]
+  },
+  {
+    "case": "sumsign_lr",
+    "category": "Hyperparameter",
+    "operator": "SRC_HLR",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.09790417551994324,
+      0.09790417551994324,
+      0.09790417551994324
+    ],
+    "base_scores": [
+      0.2089492678642273,
+      0.4931248426437378,
+      0.3993310034275055
+    ],
+    "buggy_scores": [
+      0.7938109636306763,
+      0.6967992186546326,
+      0.7144013047218323
+    ]
+  },
+  {
+    "case": "trivial_dropout",
+    "category": "Regularization",
+    "operator": "SRC_RCD",
+    "metric": "acc",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      1.0,
+      0.9999749958515167,
+      1.0
+    ],
+    "base_scores": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "buggy_scores": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "case": "trivial_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "acc",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "base_scores": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "buggy_scores": [
+      0.4987500011920929,
+      0.49619999527931213,
+      0.49674999713897705
+    ]
+  }
+]

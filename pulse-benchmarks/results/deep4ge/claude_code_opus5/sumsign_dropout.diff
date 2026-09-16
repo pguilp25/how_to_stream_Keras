@@ -1,0 +1,11 @@
+--- /home/paul/deep4ge_bench/runs_cc/sumsign_dropout.original.py	2026-09-15 21:53:57.492793125 -0400
++++ /home/paul/deep4ge_bench/runs_cc/sumsign_dropout/train.py	2026-09-15 21:53:57.108050006 -0400
+@@ -17,7 +17,7 @@
+         model.add(Dense(32, input_dim=12, activation='relu'))
+         for i in range(4):
+             model.add(Dense(2 ** (5 + i), activation='relu'))
+-            model.add(Dropout(1.0))
++            model.add(Dropout(0.2))
+         model.add(Dense(2, activation='softmax'))
+         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
+         callback_filename = model_name + '.csv'

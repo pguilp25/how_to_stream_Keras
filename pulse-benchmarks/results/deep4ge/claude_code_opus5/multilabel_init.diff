@@ -1,0 +1,11 @@
+--- /home/paul/deep4ge_bench/runs_cc/multilabel_init.original.py	2026-09-15 21:53:57.491529037 -0400
++++ /home/paul/deep4ge_bench/runs_cc/multilabel_init/train.py	2026-09-15 21:53:56.848045695 -0400
+@@ -21,7 +21,7 @@
+         start_time = time()
+         layers = [10, 20, 30, 40, 50]
+         model = keras.models.Sequential()
+-        model.add(keras.layers.Dense(layers[0], input_dim=m, activation='relu', kernel_initializer='zeros'))
++        model.add(keras.layers.Dense(layers[0], input_dim=m, activation='relu'))
+         for layer in layers[1:]:
+             model.add(keras.layers.Dense(layer, activation='relu'))
+         model.add(keras.layers.Dense(2, activation='softmax'))

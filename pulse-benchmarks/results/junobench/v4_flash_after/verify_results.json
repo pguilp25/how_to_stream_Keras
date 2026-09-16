@@ -1,0 +1,58 @@
+[
+  {
+    "case": "NBspecific_1",
+    "exit": 0,
+    "seconds": 18,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_2",
+    "exit": 0,
+    "seconds": 30,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_3",
+    "exit": 0,
+    "seconds": 2,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_4",
+    "exit": 1,
+    "seconds": 0,
+    "last_error": "NameError: name 'sns' is not defined",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_5",
+    "exit": 1,
+    "seconds": 2,
+    "last_error": "KeyError: \"['num_outbound_cmds'] not found in axis\"",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_6",
+    "exit": 0,
+    "seconds": 86,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_7",
+    "exit": 0,
+    "seconds": 2,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_8",
+    "exit": 0,
+    "seconds": 5,
+    "last_error": null,
+    "changed": true
+  }
+]

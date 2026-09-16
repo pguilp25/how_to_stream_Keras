@@ -1,0 +1,194 @@
+[
+  {
+    "case": "linear_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      5.399472158273966e-08,
+      8.888070442480966e-05,
+      1.3819565936046274e-08
+    ],
+    "base_scores": [
+      4.035531446788809e-07,
+      5.308285366822929e-08,
+      0.00017292896518483758
+    ],
+    "buggy_scores": [
+      2169.418212890625,
+      2169.5087890625,
+      2169.618408203125
+    ]
+  },
+  {
+    "case": "multilabel_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "acc",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.909375011920929,
+      0.9862500131130219,
+      0.7950000166893005
+    ],
+    "base_scores": [
+      0.9543749988079071,
+      0.9668749868869781,
+      0.9918749928474426
+    ],
+    "buggy_scores": [
+      0.6424999833106995,
+      0.6800000071525574,
+      0.6937499940395355
+    ]
+  },
+  {
+    "case": "multilabel_loss",
+    "category": "Loss",
+    "operator": "FLC",
+    "metric": "acc",
+    "changed": false,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": true,
+    "patched_scores": [],
+    "base_scores": [
+      0.9543749988079071,
+      0.9668749868869781,
+      0.9918749928474426
+    ],
+    "buggy_scores": [
+      0.37312498688697815,
+      0.5481249988079071,
+      0.3687500059604645
+    ]
+  },
+  {
+    "case": "sumsign_dropout",
+    "category": "Regularization",
+    "operator": "SRC_RCD",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": true,
+    "patched_scores": [
+      Infinity,
+      Infinity,
+      Infinity
+    ],
+    "base_scores": [
+      0.16537460684776306,
+      0.18052899837493896,
+      0.20320764183998108
+    ],
+    "buggy_scores": [
+      Infinity,
+      Infinity,
+      Infinity
+    ]
+  },
+  {
+    "case": "sumsign_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.06520335376262665,
+      0.06472087651491165,
+      0.052157413214445114
+    ],
+    "base_scores": [
+      0.16537460684776306,
+      0.18052899837493896,
+      0.20320764183998108
+    ],
+    "buggy_scores": [
+      0.6972975730895996,
+      0.6936786770820618,
+      0.6956299543380737
+    ]
+  },
+  {
+    "case": "sumsign_lr",
+    "category": "Hyperparameter",
+    "operator": "SRC_HLR",
+    "metric": "loss",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.05986281484365463,
+      0.03480817377567291,
+      0.023273026570677757
+    ],
+    "base_scores": [
+      0.2089492678642273,
+      0.4931248426437378,
+      0.3993310034275055
+    ],
+    "buggy_scores": [
+      0.7938109636306763,
+      0.6967992186546326,
+      0.7144013047218323
+    ]
+  },
+  {
+    "case": "trivial_dropout",
+    "category": "Regularization",
+    "operator": "SRC_RCD",
+    "metric": "acc",
+    "changed": true,
+    "reverted_exactly": false,
+    "restored": true,
+    "loss_fn_changed": false,
+    "patched_scores": [
+      0.9990749955177307,
+      0.9981000125408173,
+      0.9994249939918518
+    ],
+    "base_scores": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "buggy_scores": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "case": "trivial_init",
+    "category": "Weight",
+    "operator": "SRC_WCI",
+    "metric": "acc",
+    "changed": false,
+    "reverted_exactly": false,
+    "restored": false,
+    "loss_fn_changed": false,
+    "patched_scores": [],
+    "base_scores": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "buggy_scores": [
+      0.4987500011920929,
+      0.49619999527931213,
+      0.49674999713897705
+    ]
+  }
+]

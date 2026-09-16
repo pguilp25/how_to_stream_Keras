@@ -1,0 +1,25 @@
+--- /home/paul/junobench/runs_v41_fix2/NBspecific_5.original.py	2026-09-15 19:29:20.683705336 -0400
++++ /home/paul/junobench/runs_v41_fix2/NBspecific_5/notebook.py	2026-09-15 19:30:07.577346482 -0400
+@@ -106,11 +106,15 @@
+ df.drop(columns='num_outbound_cmds', inplace=True)
+ 
+ #remove from list of numeric columns
+-numeric_columns.remove('num_outbound_cmds')
+-
+-# %%
+-#column 'num_outbound_cmds' is zero everywhere, we will delete it
+-df.drop(columns='num_outbound_cmds', inplace=True)
+-
+-#remove from list of numeric columns
++# =====Pulse Change====
++# Old
++# numeric_columns.remove('num_outbound_cmds')
++#
++# # %%
++# #column 'num_outbound_cmds' is zero everywhere, we will delete it
++# df.drop(columns='num_outbound_cmds', inplace=True)
++#
++# #remove from list of numeric columns
++# numeric_columns.remove('num_outbound_cmds')
++# New
+ numeric_columns.remove('num_outbound_cmds')

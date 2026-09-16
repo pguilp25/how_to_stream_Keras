@@ -1,0 +1,28 @@
+--- /home/paul/junobench/runs_v41_fix2/NBspecific_2.original.py	2026-09-15 19:29:20.689736351 -0400
++++ /home/paul/junobench/runs_v41_fix2/NBspecific_2/notebook.py	2026-09-15 19:30:21.748107892 -0400
+@@ -100,7 +100,11 @@
+ # %% [cell not executed]
+ # from sklearn.model_selection import train_test_split
+ # 
+-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
++# =====Pulse Change====
++# Old
++# # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
++# New
++X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+ 
+ # %% [cell not executed]
+ # from tensorflow.keras.models import Sequential
+@@ -150,7 +154,11 @@
+ # %%
+ from xgboost import XGBClassifier
+ 
+-classifier = XGBClassifier(tree_method='gpu_hist', gpu_id=0)
++# =====Pulse Change====
++# Old
++# classifier = XGBClassifier(tree_method='gpu_hist', gpu_id=0)
++# New
++classifier = XGBClassifier(tree_method='hist', device='cuda:0')
+ 
+ classifier.fit(X_train, y_train)
+ y_hat = classifier.predict(X_test)

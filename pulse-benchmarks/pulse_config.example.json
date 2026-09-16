@@ -1,0 +1,7 @@
+{
+  "agent": "openrouter/deepseek/deepseek-v4.1-flash",
+  "api_key": "sk-or-...",
+  "autofix": true,
+  "telemetry": false,
+  "pdfs": false
+}

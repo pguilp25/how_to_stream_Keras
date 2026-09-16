@@ -1,0 +1,16 @@
+{
+  "seed": "fnn/FNN_64151679_correct.py",
+  "operator": "SRC_RCD",
+  "category": "Regularization",
+  "metric": "loss",
+  "base_scores": [
+    0.16537460684776306,
+    0.18052899837493896,
+    0.20320764183998108
+  ],
+  "mutant_scores": [
+    Infinity,
+    Infinity,
+    Infinity
+  ]
+}

@@ -1,0 +1,12 @@
+#!/bin/bash
+# Run python on the benchmark machine (jarvispc), inside a synced copy of this
+# directory where data/ and the ML environment exist.
+#   ./py notebook.py
+#   ./py -c "import pandas as pd; print(pd.read_csv('data/x.csv').columns)"
+set -e
+here="$(cd "$(dirname "$0")" && pwd)"
+remote="junobench/runs_cc/$(basename "$here")"
+args=$(printf '%q ' "$@")
+tar -C "$here" --exclude=./py -cf - . | ssh jarvispc "tar -C $remote -xf - && cd $remote && \
+  PATH=\$HOME/junobench/.venv/bin:\$PATH MPLBACKEND=Agg BROWSER=/bin/true PLOTLY_RENDERER=json \
+  TF_CPP_MIN_LOG_LEVEL=2 PYTHONUNBUFFERED=1 timeout 900 python $args"

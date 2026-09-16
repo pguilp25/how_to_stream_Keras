@@ -1,0 +1,94 @@
+--- /home/paul/junobench/runs_v4_fix2/NBspecific_2.original.py	2026-09-15 19:20:15.237383324 -0400
++++ /home/paul/junobench/runs_v4_fix2/NBspecific_2/notebook.py	2026-09-15 19:21:09.587199202 -0400
+@@ -97,10 +97,89 @@
+ # %% [cell not executed]
+ # num_classes = len(labels)
+ 
+-# %% [cell not executed]
++# =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# # Old
++# # # %% [cell not executed]
++# # # from sklearn.model_selection import train_test_split
++# # # 
++# # # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
++# # New
++# # %%
+ # from sklearn.model_selection import train_test_split
+-# 
++#
+ # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
++#
++# # %% [cell not executed]
++# # from tensorflow.keras.models import Sequential
++# # from tensorflow.keras.layers import Dense
++#
++# # %% [cell not executed]
++# # model = Sequential()
++# # model.add(Dense(200, activation='relu'))
++# # model.add(Dense(100, activation='relu'))
++# # model.add(Dense(80, activation='relu'))
++# # model.add(Dense(60, activation='relu'))
++# # model.add(Dense(43, activation='relu'))
++# # model.add(Dense(35, activation='relu'))
++# # model.add(Dense(33, activation='relu'))
++# # model.add(Dense(30, activation='relu'))
++# # model.add(Dense(25, activation='relu'))
++# # model.add(Dense(20, activation='relu'))
++# # model.add(Dense(15, activation='relu'))
++# # model.add(Dense(num_classes, activation='softmax'))
++#
++# # %% [cell not executed]
++# # model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
++#
++# # %% [cell not executed]
++# # train = model.fit(X_train , y_train , validation_data=(X_test,y_test), epochs=30, verbose=1)
++#
++# # %% [cell not executed]
++# # model.evaluate(X_test,y_test)
++#
++# # %% [cell not executed]
++# # print(train.history['accuracy'])
++# # print(train.history['val_accuracy'])
++# # 
++# # def plot_scores(train) :
++# #     accuracy = train.history['accuracy']
++# #     val_accuracy = train.history['val_accuracy']
++# #     epochs = range(len(accuracy))
++# #     plt.plot(epochs, accuracy, 'b', label='Score apprentissage')
++# #     plt.plot(epochs, val_accuracy, 'r', label='Score validation')
++# #     plt.title('Scores')
++# #     plt.legend()
++# #     plt.show()
++#
++# # %% [cell not executed]
++# # plot_scores(train)
++#
++# # %%
++# from xgboost import XGBClassifier
++#
++# classifier = XGBClassifier(tree_method='gpu_hist', gpu_id=0)
++#
++# classifier.fit(X_train, y_train)
++# y_hat = classifier.predict(X_test)
++# accuracy_score(y_test, y_hat)
++# New
++# %% [cell not executed]
++# num_classes = len(labels)
++num_classes = len(labels)
++
++# =====Pulse Change====
++# Old
++# # %% [cell not executed]
++# # from sklearn.model_selection import train_test_split
++# # 
++# # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
++# New
++# %%
++from sklearn.model_selection import train_test_split
++
++X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+ 
+ # %% [cell not executed]
+ # from tensorflow.keras.models import Sequential

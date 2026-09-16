@@ -1,0 +1,14 @@
+--- /home/paul/deep4ge_bench/runs_cc/trivial_dropout.original.py	2026-09-15 21:53:57.494542632 -0400
++++ /home/paul/deep4ge_bench/runs_cc/trivial_dropout/train.py	2026-09-15 21:53:57.384054583 -0400
+@@ -18,9 +18,9 @@
+         Y_test = Y_test.astype('bool')
+         model = Sequential()
+         model.add(Dense(32, input_dim=128, activation='relu'))
+-        model.add(Dropout(1.0))
++        model.add(Dropout(0.2))
+         model.add(Dense(32, activation='relu'))
+-        model.add(Dropout(1.0))
++        model.add(Dropout(0.2))
+         model.add(Dense(1, activation='sigmoid'))
+         adam = Adam(learning_rate=0.001)
+         model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])

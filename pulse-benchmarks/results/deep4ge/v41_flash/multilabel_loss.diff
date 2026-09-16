@@ -1,0 +1,58 @@
+--- /home/paul/deep4ge_bench/runs_v41/multilabel_loss.original.py	2026-09-15 22:36:32.098561305 -0400
++++ /home/paul/deep4ge_bench/runs_v41/multilabel_loss/train.py	2026-09-15 22:40:57.410203238 -0400
+@@ -16,7 +16,11 @@
+         num_classes = 1
+         dummyX, dummyY = make_multilabel_classification(n_samples=n, n_features=m, n_classes=num_classes)
+         labelEncoder = LabelEncoder()
+-        dummyY = labelEncoder.fit_transform(dummyY)
++# =====Pulse Change====
++# Old
++#         dummyY = labelEncoder.fit_transform(dummyY)
++# New
++        dummyY = labelEncoder.fit_transform(dummyY.ravel())
+         x_train, x_test, y_train, y_test = train_test_split(dummyX, dummyY, test_size=0.2)
+         input_shape = (m,)
+         start_time = time()
+@@ -26,19 +30,39 @@
+         for layer in layers[1:]:
+             model.add(keras.layers.Dense(layer, activation='relu'))
+         model.add(keras.layers.Dense(2, activation='softmax'))
+-        model.compile(loss='categorical_hinge', optimizer='adam', metrics=['accuracy'])
++# =====Pulse Change====
++# Old
++#         model.compile(loss='categorical_hinge', optimizer='adam', metrics=['accuracy'])
++# New
++        model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(4).batch(16)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+-        model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=16, verbose=1, callbacks=[enhancedLoggingCallback])
++# =====Pulse Change====
++# Old
++#         model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=16, verbose=1, callbacks=[enhancedLoggingCallback])
++# New
++        model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=16, verbose=1, callbacks=[enhancedLoggingCallback, keras.callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)])
++# =====Pulse Change====
++# Old
++#         model_location = os.path.join('trained_models', model_name)
++#         model.save(model_location)
++# New
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs(os.path.dirname(model_location), exist_ok=True)
+         model.save(model_location)
+         model.summary()
+         score = model.evaluate(x_test, y_test)
+         return score
++# =====Pulse Change====
++# Old
++#     except Exception as e:
++#         print(e)
++#         return 0
++# New
+     except Exception as e:
+         print(e)
+-        return 0
++        raise
+ if __name__ == '__main__':
+     auto_track()  # [pulse-hook]
+     result = main('50481178.h5')

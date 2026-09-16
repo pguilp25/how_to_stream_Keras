@@ -1,0 +1,12 @@
+#!/bin/bash
+# Run python on the benchmark machine (jarvispc), inside a synced copy of this
+# directory, using the Deep4ge TensorFlow 2.15 environment.
+#   ./py train.py
+#   ./py -c "import tensorflow as tf; print(tf.__version__)"
+set -e
+here="$(cd "$(dirname "$0")" && pwd)"
+remote="deep4ge_bench/runs_cc/$(basename "$here")"
+args=$(printf '%q ' "$@")
+tar -C "$here" --exclude=./py -cf - . | ssh jarvispc "mkdir -p $remote && tar -C $remote -xf - && cd $remote && \
+  PATH=\$HOME/deep4ge_bench/.venv/bin:\$PATH TF_CPP_MIN_LOG_LEVEL=2 CUDA_VISIBLE_DEVICES= MPLBACKEND=Agg \
+  PYTHONUNBUFFERED=1 timeout 1800 python $args"

@@ -1,0 +1,34 @@
+--- /home/paul/junobench/runs_v4_fix2/NBspecific_3.original.py	2026-09-15 19:20:15.223328613 -0400
++++ /home/paul/junobench/runs_v4_fix2/NBspecific_3/notebook.py	2026-09-15 19:24:14.981424588 -0400
+@@ -57,7 +57,11 @@
+ from sklearn.linear_model import LinearRegression # 导入线性回归模型
+ model = LinearRegression() # 定义模型
+ model.fit(X_train, y_train) # 训练模型
+-yFit = model.predict(X_train)  # 用回归模型来预测输出
++# =====Pulse Change====
++# Old
++# yFit = model.predict(X_train)
++# New
++yFit = model.predict(X_test)  # 用回归模型来预测输出
+ 
+ # %%
+ from sklearn.metrics import mean_squared_error, mean_absolute_error, median_absolute_error
+@@ -68,9 +72,15 @@
+ print('回归系数: w={}'.format(model.coef_))  # w1,..wm: 回归系数, XUPT
+ # 回归模型的评价指标
+ print('R2 确定系数：{:.4f}'.format(model.score(X_train, y_train)))  # R2 判定系数
+-print('均方误差：{:.4f}'.format(mean_squared_error(y_train, yFit)))  # MSE 均方误差
+-print('平均绝对值误差：{:.4f}'.format(mean_absolute_error(y_train, yFit)))  # MAE 平均绝对误差
+-print('中位绝对值误差：{:.4f}'.format(median_absolute_error(y_train, yFit)))  # 中值绝对误差
++# =====Pulse Change====
++# Old
++# print('均方误差：{:.4f}'.format(mean_squared_error(y_train, yFit)))  # MSE 均方误差
++# print('平均绝对值误差：{:.4f}'.format(mean_absolute_error(y_train, yFit)))  # MAE 平均绝对误差
++# print('中位绝对值误差：{:.4f}'.format(median_absolute_error(y_train, yFit)))  # 中值绝对误差
++# New
++print('均方误差：{:.4f}'.format(mean_squared_error(y_test, yFit)))  # MSE 均方误差
++print('平均绝对值误差：{:.4f}'.format(mean_absolute_error(y_test, yFit)))  # MAE 平均绝对误差
++print('中位绝对值误差：{:.4f}'.format(median_absolute_error(y_test, yFit)))  # 中值绝对误差
+ 
+ # %% [cell not executed]
+ # m = X_train.shape[1]

@@ -1,0 +1,15 @@
+--- /home/paul/junobench/runs_cc/NBspecific_2.original.py	2026-09-15 18:07:12.347150930 -0400
++++ /home/paul/junobench/runs_cc/NBspecific_2/notebook.py	2026-09-15 18:10:26.616195554 -0400
+@@ -96,9 +96,9 @@
+ # num_classes = len(labels)
+ 
+ # %% [cell not executed]
+-# from sklearn.model_selection import train_test_split
+-# 
+-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
++from sklearn.model_selection import train_test_split
++
++X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+ 
+ # %% [cell not executed]
+ # from tensorflow.keras.models import Sequential

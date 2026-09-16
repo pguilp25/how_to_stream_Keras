@@ -1,0 +1,22 @@
+--- /home/paul/deep4ge_bench/runs_v4/sumsign_dropout.original.py	2026-09-15 22:12:37.797773710 -0400
++++ /home/paul/deep4ge_bench/runs_v4/sumsign_dropout/train.py	2026-09-15 22:16:01.336028937 -0400
+@@ -18,9 +18,17 @@
+         model.add(Dense(32, input_dim=12, activation='relu'))
+         for i in range(4):
+             model.add(Dense(2 ** (5 + i), activation='relu'))
+-            model.add(Dropout(1.0))
++# =====Pulse Change====
++# Old
++#             model.add(Dropout(1.0))
++# New
++            model.add(Dropout(0.5))
+         model.add(Dense(2, activation='softmax'))
+-        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
++# =====Pulse Change====
++# Old
++#         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
++# New
++        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.SparseCategoricalCrossentropy(), metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(len(X_train)).batch(16)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)

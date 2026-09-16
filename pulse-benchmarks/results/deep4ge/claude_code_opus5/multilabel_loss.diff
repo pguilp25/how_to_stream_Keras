@@ -1,0 +1,11 @@
+--- /home/paul/deep4ge_bench/runs_cc/multilabel_loss.original.py	2026-09-15 21:53:57.492169573 -0400
++++ /home/paul/deep4ge_bench/runs_cc/multilabel_loss/train.py	2026-09-15 21:53:56.949047370 -0400
+@@ -25,7 +25,7 @@
+         for layer in layers[1:]:
+             model.add(keras.layers.Dense(layer, activation='relu'))
+         model.add(keras.layers.Dense(2, activation='softmax'))
+-        model.compile(loss='categorical_hinge', optimizer='adam', metrics=['accuracy'])
++        model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(4).batch(16)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)

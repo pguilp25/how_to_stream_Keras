@@ -1,0 +1,22 @@
+--- /home/paul/junobench/runs_1/NBspecific_6.original.py	2026-09-15 16:50:28.184767119 -0400
++++ /home/paul/junobench/runs_1/NBspecific_6/notebook.py	2026-09-15 16:51:17.859176118 -0400
+@@ -227,6 +227,19 @@
+ # plt.show()
+ 
+ # %%
++# =====Pulse Change====
++# Old
++# plt.plot(history.history['accuracy'],label='Train Accuracy')
++# plt.plot(history.history['val_accuracy'],label='Validation Accuracy')
++# plt.title('Accuracy Per epoch')
++# plt.ylabel('Accuracy')
++# plt.xlabel('Epoch')
++# plt.show()
++# New
++history = model.fit(TrainBatch
++          ,validation_data=ValidationBatch,
++          epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
++
+ plt.plot(history.history['accuracy'],label='Train Accuracy')
+ plt.plot(history.history['val_accuracy'],label='Validation Accuracy')
+ plt.title('Accuracy Per epoch')

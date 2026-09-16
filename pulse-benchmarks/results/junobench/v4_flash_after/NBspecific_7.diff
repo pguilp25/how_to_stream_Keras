@@ -1,0 +1,30 @@
+--- /home/paul/junobench/runs_v4_fix2/NBspecific_7.original.py	2026-09-15 19:20:15.199148080 -0400
++++ /home/paul/junobench/runs_v4_fix2/NBspecific_7/notebook.py	2026-09-15 19:27:18.969168241 -0400
+@@ -112,4 +112,26 @@
+ # fig.show()
+ 
+ # %%
+-df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='%percent emission')
++# =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# Old
++# df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='%percent emission')# =====Pulse Change====
++# Old
++#
++# # New
++# df6=df.groupby('region').get_group('Asia Pacific').sort_values(by=df.groupby('region').get_group('Asia Pacific').columns[0])
++# # New
++# df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='% emission')
++# # New
++# df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='% emission')
++# # New
++# df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='% percent emission')
++# New
++
++# New
++df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='emissions')

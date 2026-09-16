@@ -1,0 +1,22 @@
+--- /home/paul/deep4ge_bench/runs_v4/multilabel_init.original.py	2026-09-15 22:12:37.797773710 -0400
++++ /home/paul/deep4ge_bench/runs_v4/multilabel_init/train.py	2026-09-15 22:16:31.883468131 -0400
+@@ -20,9 +20,17 @@
+         x_train, x_test, y_train, y_test = train_test_split(dummyX, dummyY, test_size=0.2)
+         input_shape = (m,)
+         start_time = time()
+-        layers = [10, 20, 30, 40, 50]
++# =====Pulse Change====
++# Old
++#         layers = [10, 20, 30, 40, 50]
++# New
++        layers = [10]
+         model = keras.models.Sequential()
+-        model.add(keras.layers.Dense(layers[0], input_dim=m, activation='relu', kernel_initializer='zeros'))
++# =====Pulse Change====
++# Old
++#         model.add(keras.layers.Dense(layers[0], input_dim=m, activation='relu', kernel_initializer='zeros'))
++# New
++        model.add(keras.layers.Dense(layers[0], input_dim=m, activation='relu'))
+         for layer in layers[1:]:
+             model.add(keras.layers.Dense(layer, activation='relu'))
+         model.add(keras.layers.Dense(2, activation='softmax'))

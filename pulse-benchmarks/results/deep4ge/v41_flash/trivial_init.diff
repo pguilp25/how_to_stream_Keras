@@ -1,0 +1,29 @@
+--- /home/paul/deep4ge_bench/runs_v41/trivial_init.original.py	2026-09-15 22:52:20.694673966 -0400
++++ /home/paul/deep4ge_bench/runs_v41/trivial_init/train.py	2026-09-15 22:54:56.993131768 -0400
+@@ -18,7 +18,11 @@
+         Y_train = Y_train.astype('bool')
+         Y_test = Y_test.astype('bool')
+         model = Sequential()
+-        model.add(Dense(32, input_dim=128, activation='relu', kernel_initializer='zeros'))
++# =====Pulse Change====
++# Old
++#         model.add(Dense(32, input_dim=128, activation='relu', kernel_initializer='zeros'))
++# New
++        model.add(Dense(32, input_dim=128, activation='relu'))
+         model.add(Dropout(0.1))
+         model.add(Dense(32, activation='relu'))
+         model.add(Dropout(0.1))
+@@ -30,7 +34,13 @@
+         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(4).batch(32)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+         model.fit(X_train, Y_train, batch_size=batch_size, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# =====Pulse Change====
++# Old
++#         model_location = os.path.join('trained_models', model_name)
++#         model.save(model_location)
++# New
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs(os.path.dirname(model_location), exist_ok=True)
+         model.save(model_location)
+         model.summary()
+         score = model.evaluate(X_test, Y_test)

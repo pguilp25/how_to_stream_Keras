@@ -1,0 +1,25 @@
+--- /home/paul/deep4ge_bench/runs_v4/sumsign_init.original.py	2026-09-15 22:15:01.767680115 -0400
++++ /home/paul/deep4ge_bench/runs_v4/sumsign_init/train.py	2026-09-15 22:21:22.340926562 -0400
+@@ -15,10 +15,18 @@
+         Y = to_categorical(Y, num_classes=2)
+         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+         model = Sequential()
+-        model.add(Dense(32, input_dim=12, activation='relu', kernel_initializer='zeros'))
+-        for i in range(4):
+-            model.add(Dense(2 ** (5 + i), activation='relu'))
+-            model.add(Dropout(0.2))
++# =====Pulse Change====
++# Old
++#         model.add(Dense(32, input_dim=12, activation='relu', kernel_initializer='zeros'))
++# New
++        model.add(Dense(32, input_dim=12, activation='relu'))
++# =====Pulse Change====
++# Old
++#         for i in range(4):
++#             model.add(Dense(2 ** (5 + i), activation='relu'))
++#             model.add(Dropout(0.2))
++#         model.add(Dense(2, activation='softmax'))
++# New
+         model.add(Dense(2, activation='softmax'))
+         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
+         callback_filename = model_name + '.csv'

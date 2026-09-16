@@ -1,0 +1,27 @@
+--- /home/paul/junobench/runs_cc/NBspecific_4.original.py	2026-09-15 18:07:12.380026455 -0400
++++ /home/paul/junobench/runs_cc/NBspecific_4/notebook.py	2026-09-15 18:10:26.913200234 -0400
+@@ -7,15 +7,15 @@
+ #     for filename in filenames:
+ #         print(os.path.join(dirname, filename))
+ 
+-# %% [cell not executed]
+-# ### Importation des bibliothèques générales que nous utiliserons dans ce notebook
+-# import numpy as np # algèbre linéaire
+-# import pandas as pd # traitement des données, I/O de fichier CSV (par ex. pd.read_csv)
+-# import seaborn as sns # bibliothèque de tracé qui utilise matplot 
+-# import matplotlib.pyplot as plt # pour tracer certains paramètres dans seaborn
+-# 
+-# # Reading the dataset
+-# dataset = pd.read_csv('data/german_credit_data.csv', index_col=None)
++# %%
++### Importation des bibliothèques générales que nous utiliserons dans ce notebook
++import numpy as np # algèbre linéaire
++import pandas as pd # traitement des données, I/O de fichier CSV (par ex. pd.read_csv)
++import seaborn as sns # bibliothèque de tracé qui utilise matplot
++import matplotlib.pyplot as plt # pour tracer certains paramètres dans seaborn
++
++# Reading the dataset
++dataset = pd.read_csv('data/german_credit_data.csv', index_col=None)
+ 
+ # %% [cell not executed]
+ # dataset.head()

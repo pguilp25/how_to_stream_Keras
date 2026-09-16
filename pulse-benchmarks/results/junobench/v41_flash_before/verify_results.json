@@ -1,0 +1,58 @@
+[
+  {
+    "case": "NBspecific_1",
+    "exit": 1,
+    "seconds": 4,
+    "last_error": "NameError: name 'tf_idf' is not defined",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_2",
+    "exit": 0,
+    "seconds": 27,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_3",
+    "exit": 1,
+    "seconds": 1,
+    "last_error": "ValueError: operands could not be broadcast together with shapes (68,) (272,)",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_4",
+    "exit": 1,
+    "seconds": 0,
+    "last_error": "NameError: name 'sns' is not defined",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_5",
+    "exit": 0,
+    "seconds": 2,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_6",
+    "exit": 1,
+    "seconds": 13,
+    "last_error": "NameError: name 'history' is not defined",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_7",
+    "exit": 1,
+    "seconds": 2,
+    "last_error": "KeyError: '%percent emission'",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_8",
+    "exit": 1,
+    "seconds": 3,
+    "last_error": "KeyError: 'Amount'",
+    "changed": false
+  }
+]

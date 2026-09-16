@@ -1,0 +1,16 @@
+{
+  "seed": "fnn/FNN_64151679_correct.py",
+  "operator": "SRC_HLR",
+  "category": "Hyperparameter",
+  "metric": "loss",
+  "base_scores": [
+    0.2089492678642273,
+    0.4931248426437378,
+    0.3993310034275055
+  ],
+  "mutant_scores": [
+    0.7938109636306763,
+    0.6967992186546326,
+    0.7144013047218323
+  ]
+}

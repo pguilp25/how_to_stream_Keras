@@ -1,0 +1,11 @@
+--- /home/paul/junobench/runs_cc/NBspecific_3.original.py	2026-09-15 18:07:12.363886474 -0400
++++ /home/paul/junobench/runs_cc/NBspecific_3/notebook.py	2026-09-15 18:10:26.758197792 -0400
+@@ -106,7 +106,7 @@
+ # print('中位绝对值误差：{:.4f}'.format(median_absolute_error(y_test, yFit)))  # 中值绝对误差
+ 
+ # %%
+-
++yFit = model.predict(X_test)  # 测试集预测
+ m = X_test.shape[1]
+ n = X_test.shape[0]
+ yMean = np.mean(y_test)

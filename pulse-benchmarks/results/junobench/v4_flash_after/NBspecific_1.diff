@@ -1,0 +1,63 @@
+--- /home/paul/junobench/runs_v4_fix2/NBspecific_1.original.py	2026-09-15 19:20:15.222558419 -0400
++++ /home/paul/junobench/runs_v4_fix2/NBspecific_1/notebook.py	2026-09-15 19:23:56.211796013 -0400
+@@ -248,8 +248,13 @@
+ 
+ # %%
+ # Function for applying stemming function
++# =====Pulse Change====
++# Old
++# def stem_words(text):
++#     return " ".join([ps.stem(word) for word in text])
++# New
+ def stem_words(text):
+-    return " ".join([ps.stem(word) for word in text])
++    return " ".join([ps.stem(word) for word in text.split()])
+ 
+ # df['review'].apply(stem_words)
+ 
+@@ -292,10 +297,41 @@
+ # %% [cell not executed]
+ # bow2.toarray()
+ 
+-# %% [cell not executed]
+-# from sklearn.feature_extraction.text import TfidfVectorizer
+-# tfidf = TfidfVectorizer()
+-# tf_idf = tfidf.fit_transform(df['lemma_review'])
++# =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# # Old
++# # # =====Pulse Change====
++# # # Old
++# # # # %% [cell not executed]
++# # # # from sklearn.feature_extraction.text import TfidfVectorizer
++# # # # tfidf = TfidfVectorizer()
++# # # # tf_idf = tfidf.fit_transform(df['lemma_review'])
++# # # New
++# # # %% [cell not executed]
++# # # from sklearn.feature_extraction.text import TfidfVectorizer
++# # # tfidf = TfidfVectorizer()
++# # # tf_idf = tfidf.fit_transform(df['lemma_review'])
++# #
++# # # %
++# #
++# # # %%
++# # tf_idf.toarray()
++# # New
++# # =====Pulse Change====
++# # Old
++# # # %% [cell not executed]
++# # # from sklearn.feature_extraction.text import TfidfVectorizer
++# # # tfidf = TfidfVectorizer()
++# # # tf_idf = tfidf.fit_transform(df['lemma_review'])
++# # New
++# New
++
++from sklearn.feature_extraction.text import TfidfVectorizer
++tfidf = TfidfVectorizer()
++tf_idf = tfidf.fit_transform(df['lemma_review'])
++
++# %
+ 
+ # %%
+ tf_idf.toarray()

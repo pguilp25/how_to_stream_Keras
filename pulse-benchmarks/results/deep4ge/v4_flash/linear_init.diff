@@ -1,0 +1,64 @@
+--- /home/paul/deep4ge_bench/runs_v4/linear_init.original.py	2026-09-15 22:12:37.797773710 -0400
++++ /home/paul/deep4ge_bench/runs_v4/linear_init/train.py	2026-09-15 22:18:26.173111981 -0400
+@@ -12,24 +12,55 @@
+     try:
+         np.random.seed(7)
+         X = np.linspace(0, 1, 10000).reshape(-1, 1)
++# =====Pulse Change====
++# Old
++#         Y = np.linspace(0.01, 100.01, 10000).reshape(-1, 1)
++# New
+         Y = np.linspace(0.01, 100.01, 10000).reshape(-1, 1)
++        Y_mean, Y_std = Y.mean(), Y.std()
++        Y = (Y - Y_mean) / Y_std
+         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=42)
+         model = Sequential()
+-        model.add(Dense(50, input_dim=1, activation='relu', kernel_initializer='zeros'))
++# =====Pulse Change====
++# Old
++#         model.add(Dense(50, input_dim=1, activation='relu', kernel_initializer='zeros'))
++# New
++        model.add(Dense(50, input_dim=1, activation='relu'))
+         model.add(Dense(50, activation='relu'))
+         model.add(Dense(1, activation='linear'))
+-        model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
+-        callback_filename = model_name + '.csv'
++        model.compile(loss='mse', optimizer='adam', metrics=['mae'])
++# =====Pulse Change====
++# Old
++#         callback_filename = model_name + '.csv'
++# New
++        callback_filename = model_name.rsplit('.', 1)[0] + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(len(X_train)).batch(32)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+         model.fit(train_dataset, epochs=50, validation_data=(X_test, Y_test), verbose=1, callbacks=[enhancedLoggingCallback])
+         scores = model.evaluate(X_test, Y_test)
++# =====Pulse Change====
++# Old
++#         model_location = os.path.join('trained_models', model_name)
++#         model.save(model_location)
++# New
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs('trained_models', exist_ok=True)
+         model.save(model_location)
+         return scores
++# =====Pulse Change====
++# Old
++#     except Exception as e:
++#         print(e)
++#         return 0
++# New
+     except Exception as e:
+-        print(e)
+-        return 0
++        import traceback
++        traceback.print_exc()
++        raise
+ if __name__ == '__main__':
+     auto_track()  # [pulse-hook]
+-    main('46642627.h5')
++# =====Pulse Change====
++# Old
++#     main('46642627.h5')
++# New
++    main('46642627.keras')

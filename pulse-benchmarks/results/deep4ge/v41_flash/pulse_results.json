@@ -1,0 +1,42 @@
+[
+  {
+    "case": "linear_init",
+    "exit": 0,
+    "seconds": 452
+  },
+  {
+    "case": "multilabel_init",
+    "exit": 0,
+    "seconds": 949
+  },
+  {
+    "case": "multilabel_loss",
+    "exit": 0,
+    "seconds": 285
+  },
+  {
+    "case": "sumsign_dropout",
+    "exit": 0,
+    "seconds": 1056
+  },
+  {
+    "case": "sumsign_init",
+    "exit": 0,
+    "seconds": 601
+  },
+  {
+    "case": "sumsign_lr",
+    "exit": 0,
+    "seconds": 777
+  },
+  {
+    "case": "trivial_dropout",
+    "exit": 0,
+    "seconds": 954
+  },
+  {
+    "case": "trivial_init",
+    "exit": 0,
+    "seconds": 234
+  }
+]

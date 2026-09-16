@@ -1,3 +1,5 @@
-__pycache__/
+
+pulse-benchmarks/**/pulse_config.json
 *.pyc
+__pycache__/
 .venv/

@@ -1,0 +1,89 @@
+--- /home/paul/deep4ge_bench/runs_v41/sumsign_lr.original.py	2026-09-15 22:44:04.298868616 -0400
++++ /home/paul/deep4ge_bench/runs_v41/sumsign_lr/train.py	2026-09-15 22:56:08.000224300 -0400
+@@ -8,31 +8,77 @@
+ import os
+ from CustomCallback import EnhancedLoggingCallback
+ 
++# =====Pulse Change====
++# Old
++# def main(model_name):
++#     try:
++#         X = np.random.randn(1000, 12)
++# New
+ def main(model_name):
+     try:
++        tf.keras.utils.set_random_seed(42)
+         X = np.random.randn(1000, 12)
+         Y = np.sum(X, axis=1) > 0
+         Y = to_categorical(Y, num_classes=2)
+         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+         model = Sequential()
+         model.add(Dense(32, input_dim=12, activation='relu'))
+-        for i in range(4):
++# =====Pulse Change====
++# Old
++#         for i in range(4):
++#             model.add(Dense(2 ** (5 + i), activation='relu'))
++#             model.add(Dropout(0.2))
++# New
++        for i in range(2):
+             model.add(Dense(2 ** (5 + i), activation='relu'))
+-            model.add(Dropout(0.2))
++            model.add(Dropout(0.5))
+         model.add(Dense(2, activation='softmax'))
+-        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.603), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
+-        callback_filename = model_name + '.csv'
+-        train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(len(X_train)).batch(16)
+-        enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+-        model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# =====Pulse Change====
++# Old
++#         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.603), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
++# New
++        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
++# =====Pulse Change====
++# Old
++#         callback_filename = model_name + '.csv'
++# New
++        callback_filename = os.path.splitext(model_name)[0] + '.csv'
++# =====Pulse Change====
++# Old
++#         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(len(X_train)).batch(16)
++#         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
++# New
++        enhancedLoggingCallback = EnhancedLoggingCallback(None, callback_filename)
++# =====Pulse Change====
++# Old
++#         model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# New
++# =====Pulse Change====
++# Old
++#         model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback, tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)])
++# New
++        model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_split=0.2, callbacks=[enhancedLoggingCallback, tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)])
++# =====Pulse Change====
++# Old
++#         model_location = os.path.join('trained_models', model_name)
++#         model.save(model_location)
++# New
++        os.makedirs('trained_models', exist_ok=True)
+         model_location = os.path.join('trained_models', model_name)
+         model.save(model_location)
+         score = model.evaluate(X_test, Y_test)
+         print(f'Test loss: {score[0]}, Test accuracy: {score[1]}')
+         return score
++# =====Pulse Change====
++# Old
++#     except Exception as e:
++#         print(e)
++#         return 0
++# New
+     except Exception as e:
+-        print(e)
+-        return 0
++        import traceback
++        traceback.print_exc()
++        return [np.nan, np.nan]
+ if __name__ == '__main__':
+     auto_track()  # [pulse-hook]
+     main('64151679.h5')

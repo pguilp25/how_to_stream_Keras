@@ -1,0 +1,73 @@
+--- /home/paul/deep4ge_bench/runs_v4/trivial_dropout.original.py	2026-09-15 22:17:27.872233871 -0400
++++ /home/paul/deep4ge_bench/runs_v4/trivial_dropout/train.py	2026-09-15 22:23:38.548005227 -0400
+@@ -1,4 +1,12 @@
+-from pulse import auto_track  # [pulse-hook]
++# =====Pulse Change====
++# Old
++# from pulse import auto_track  # [pulse-hook]
++# New
++# =====Pulse Change====
++# Old
++# from pulse import track  # [pulse-hook]
++# New
++
+ from keras.models import Sequential
+ from keras.layers import Dense, Dropout
+ from keras.optimizers import Adam
+@@ -19,9 +27,15 @@
+         Y_test = Y_test.astype('bool')
+         model = Sequential()
+         model.add(Dense(32, input_dim=128, activation='relu'))
+-        model.add(Dropout(1.0))
++# =====Pulse Change====
++# Old
++#         model.add(Dropout(1.0))
++#         model.add(Dense(32, activation='relu'))
++#         model.add(Dropout(1.0))
++# New
++        model.add(Dropout(0.5))
+         model.add(Dense(32, activation='relu'))
+-        model.add(Dropout(1.0))
++        model.add(Dropout(0.5))
+         model.add(Dense(1, activation='sigmoid'))
+         adam = Adam(learning_rate=0.001)
+         model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
+@@ -29,8 +43,18 @@
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(4).batch(32)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+-        model.fit(X_train, Y_train, batch_size=batch_size, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# =====Pulse Change====
++# Old
++#         model.fit(X_train, Y_train, batch_size=batch_size, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# New
++        model.fit(train_dataset, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# =====Pulse Change====
++# Old
++#         model_location = os.path.join('trained_models', model_name)
++#         model.save(model_location)
++# New
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs('trained_models', exist_ok=True)
+         model.save(model_location)
+         model.summary()
+         score = model.evaluate(X_test, Y_test)
+@@ -38,6 +62,16 @@
+     except Exception as e:
+         print(e)
+         return 0
++# =====Pulse Change====
++# Old
++# if __name__ == '__main__':
++#     auto_track()  # [pulse-hook]
++#     main('31880720.h5')
++# New
+ if __name__ == '__main__':
+-    auto_track()  # [pulse-hook]
+-    main('31880720.h5')
++# =====Pulse Change====
++# Old
++#     score = main('31880720.h5')
++#     track(score)
++# New
++    score = main('31880720.h5')

@@ -1,0 +1,17 @@
+--- /home/paul/junobench/runs_cc/NBspecific_6.original.py	2026-09-15 18:07:12.414175439 -0400
++++ /home/paul/junobench/runs_cc/NBspecific_6/notebook.py	2026-09-15 18:10:27.230205230 -0400
+@@ -211,10 +211,10 @@
+     mode='auto',
+     save_best_only=True)
+ 
+-# %% [cell not executed]
+-# history = model.fit(TrainBatch
+-#           ,validation_data=ValidationBatch,
+-#           epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
++# %%
++history = model.fit(TrainBatch
++          ,validation_data=ValidationBatch,
++          epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
+ 
+ # %% [cell not executed]
+ # plt.plot(history.history['loss'],label='Train Loss')

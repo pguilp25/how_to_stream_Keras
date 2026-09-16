@@ -1,0 +1,32 @@
+--- /home/paul/junobench/runs_v41/NBspecific_5.original.py	2026-09-15 18:18:50.652619248 -0400
++++ /home/paul/junobench/runs_v41/NBspecific_5/notebook.py	2026-09-15 18:19:33.618421893 -0400
+@@ -101,13 +101,22 @@
+ # plt.figure(figsize=(18,12));
+ # sns.heatmap(df.corr(), annot=True, fmt='1.1f');
+ 
+-# %%
+-#column 'num_outbound_cmds' is zero everywhere, we will delete it
+-df.drop(columns='num_outbound_cmds', inplace=True)
+-
+-#remove from list of numeric columns
+-numeric_columns.remove('num_outbound_cmds')
+-
++# =====Pulse Change====
++# Old
++# # %%
++# #column 'num_outbound_cmds' is zero everywhere, we will delete it
++# df.drop(columns='num_outbound_cmds', inplace=True)
++#
++# #remove from list of numeric columns
++# numeric_columns.remove('num_outbound_cmds')
++#
++# # %%
++# #column 'num_outbound_cmds' is zero everywhere, we will delete it
++# df.drop(columns='num_outbound_cmds', inplace=True)
++#
++# #remove from list of numeric columns
++# numeric_columns.remove('num_outbound_cmds')
++# New
+ # %%
+ #column 'num_outbound_cmds' is zero everywhere, we will delete it
+ df.drop(columns='num_outbound_cmds', inplace=True)

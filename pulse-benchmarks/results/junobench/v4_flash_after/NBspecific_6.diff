@@ -1,0 +1,106 @@
+--- /home/paul/junobench/runs_v4_fix2/NBspecific_6.original.py	2026-09-15 19:20:15.250868322 -0400
++++ /home/paul/junobench/runs_v4_fix2/NBspecific_6/notebook.py	2026-09-15 19:27:29.291558907 -0400
+@@ -86,7 +86,11 @@
+ # %%
+ #ONE HOT ENCODING THE LABELS
+ label = label.loc[data.index,10]
+-label = tf.keras.utils.to_categorical(label,num_classes=3)
++# =====Pulse Change====
++# Old
++# label = tf.keras.utils.to_categorical(label,num_classes=3)
++# New
++label = tf.keras.utils.to_categorical(label + 1,num_classes=3)
+ 
+ # %%
+ #CREATE DATALODER
+@@ -109,7 +113,11 @@
+         dataX.append(x_sample)
+         dataY.append(y_sample)
+         idx+=1
+-      dataX = np.array(dataX).reshape(-1,self.window_size,self.number_features)
++# =====Pulse Change====
++# Old
++#       dataX = np.array(dataX).reshape(-1,self.window_size,self.number_features)
++# New
++      dataX = np.array(dataX).reshape(-1,self.window_size,self.number_features, 1)
+       dataY = np.array(dataY)
+       return dataX,dataY
+ 
+@@ -191,7 +199,11 @@
+     convsecond_3 = keras.layers.LeakyReLU(alpha=0.01)(convsecond_3)
+     convsecond_output = keras.layers.concatenate([convsecond_1, convsecond_2, convsecond_3], axis=3)
+     conv_reshape = Reshape((int(convsecond_output.shape[1]), int(convsecond_output.shape[3])))(convsecond_output)
+-    conv_reshape = keras.layers.Dropout(0.2, noise_shape=(None, 1, int(conv_reshape.shape[2])))(conv_reshape, training=True)
++# =====Pulse Change====
++# Old
++#     conv_reshape = keras.layers.Dropout(0.2, noise_shape=(None, 1, int(conv_reshape.shape[2])))(conv_reshape, training=True)
++# New
++    conv_reshape = keras.layers.Dropout(0.2, noise_shape=(None, 1, int(conv_reshape.shape[2])))(conv_reshape)
+     # build the last LSTM layer
+     conv_lstm = LSTM(number_of_lstm)(conv_reshape)
+     # build the output layer
+@@ -213,18 +225,57 @@
+     mode='auto',
+     save_best_only=True)
+ 
+-# %% [cell not executed]
++# =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# # Old
++# # # %% [cell not executed]
++# # # history = model.fit(TrainBatch
++# # #           ,validation_data=ValidationBatch,
++# # #           epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
++# # New
++# # %%
+ # history = model.fit(TrainBatch
+ #           ,validation_data=ValidationBatch,
+ #           epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
+-
+-# %% [cell not executed]
+-# plt.plot(history.history['loss'],label='Train Loss')
+-# plt.plot(history.history['val_loss'],label='Validation Loss')
+-# plt.title('Loss Per epoch')
+-# plt.ylabel('Loss')
++# New
++# =====Pulse Change====
++# Old
++# # %% [cell not executed]
++# # history = model.fit(TrainBatch
++# #           ,validation_data=ValidationBatch,
++# #           epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
++# New
++# %%
++history = model.fit(TrainBatch
++          ,validation_data=ValidationBatch,
++          epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
++
++# =====Pulse Change====
++# Old
++# # %% [cell not executed]
++# # plt.plot(history.history['loss'],label='Train Loss')
++# # plt.plot(history.history['val_loss'],label='Validation Loss')
++# # plt.title('Loss Per epoch')
++# # plt.ylabel('Loss')
++# # plt.xlabel('Epoch')
++# # plt.show()
++#
++# # %%
++# plt.plot(history.history['accuracy'],label='Train Accuracy')
++# plt.plot(history.history['val_accuracy'],label='Validation Accuracy')
++# plt.title('Accuracy Per epoch')
++# plt.ylabel('Accuracy')
+ # plt.xlabel('Epoch')
+ # plt.show()
++# New
++# %%
++plt.plot(history.history['loss'],label='Train Loss')
++plt.plot(history.history['val_loss'],label='Validation Loss')
++plt.title('Loss Per epoch')
++plt.ylabel('Loss')
++plt.xlabel('Epoch')
++plt.show()
+ 
+ # %%
+ plt.plot(history.history['accuracy'],label='Train Accuracy')

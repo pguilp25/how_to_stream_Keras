@@ -1,0 +1,40 @@
+--- /home/paul/junobench/runs/NBspecific_2.original.py	2026-09-15 16:58:08.214425598 -0400
++++ /home/paul/junobench/runs/NBspecific_2/notebook.py	2026-09-15 17:49:57.564283951 -0400
+@@ -150,8 +150,37 @@
+ # %%
+ from xgboost import XGBClassifier
+ 
++# =====Pulse Change====
++# Old
++# classifier = XGBClassifier(tree_method='gpu_hist', gpu_id=0)
++# New
+ classifier = XGBClassifier(tree_method='gpu_hist', gpu_id=0)
++# =====Pulse Change====
++# Old
++# X_train = ...
++# New
++X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+ 
++# =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# Old
++# # =====Pulse Change====
++# Old
++# classifier.fit(X_train, y_train)
++# New
++# =====Pulse Change====
++# Old
++# classifier.fit(X_train, y_train.values.reshape(-1))
++# New
+ classifier.fit(X_train, y_train)
++# New
++classifier.fit(X, y)
++# New
++classifier.fit(X_train, y)
++# New
++classifier.fit(X_train, y)
+ y_hat = classifier.predict(X_test)
+ accuracy_score(y_test, y_hat)

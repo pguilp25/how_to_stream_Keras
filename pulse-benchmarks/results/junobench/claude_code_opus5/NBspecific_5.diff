@@ -1,0 +1,13 @@
+--- /home/paul/junobench/runs_cc/NBspecific_5.original.py	2026-09-15 18:07:12.396665141 -0400
++++ /home/paul/junobench/runs_cc/NBspecific_5/notebook.py	2026-09-15 18:10:27.065202630 -0400
+@@ -105,10 +105,3 @@
+ 
+ #remove from list of numeric columns
+ numeric_columns.remove('num_outbound_cmds')
+-
+-# %%
+-#column 'num_outbound_cmds' is zero everywhere, we will delete it
+-df.drop(columns='num_outbound_cmds', inplace=True)
+-
+-#remove from list of numeric columns
+-numeric_columns.remove('num_outbound_cmds')

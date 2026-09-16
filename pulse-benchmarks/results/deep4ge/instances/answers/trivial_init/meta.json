@@ -1,0 +1,16 @@
+{
+  "seed": "fnn/FNN_31880720_correct.py",
+  "operator": "SRC_WCI",
+  "category": "Weight",
+  "metric": "acc",
+  "base_scores": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "mutant_scores": [
+    0.4987500011920929,
+    0.49619999527931213,
+    0.49674999713897705
+  ]
+}

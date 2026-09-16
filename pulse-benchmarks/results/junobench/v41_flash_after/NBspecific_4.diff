@@ -1,0 +1,33 @@
+--- /home/paul/junobench/runs_v41_fix2/NBspecific_4.original.py	2026-09-15 19:29:20.677974678 -0400
++++ /home/paul/junobench/runs_v41_fix2/NBspecific_4/notebook.py	2026-09-15 19:30:40.556210673 -0400
+@@ -11,13 +11,25 @@
+ 
+ # %% [cell not executed]
+ # ### Importation des bibliothèques générales que nous utiliserons dans ce notebook
+-# import numpy as np # algèbre linéaire
+-# import pandas as pd # traitement des données, I/O de fichier CSV (par ex. pd.read_csv)
+-# import seaborn as sns # bibliothèque de tracé qui utilise matplot 
+-# import matplotlib.pyplot as plt # pour tracer certains paramètres dans seaborn
++# =====Pulse Change====
++# Old
++# # import numpy as np # algèbre linéaire
++# # import pandas as pd # traitement des données, I/O de fichier CSV (par ex. pd.read_csv)
++# # import seaborn as sns # bibliothèque de tracé qui utilise matplot 
++# # import matplotlib.pyplot as plt # pour tracer certains paramètres dans seaborn
++# New
++import numpy as np # algèbre linéaire
++import pandas as pd # traitement des données, I/O de fichier CSV (par ex. pd.read_csv)
++import seaborn as sns # bibliothèque de tracé qui utilise matplot 
++import matplotlib.pyplot as plt # pour tracer certains paramètres dans seaborn
+ # 
++# =====Pulse Change====
++# Old
++# # # Reading the dataset
++# # dataset = pd.read_csv('data/german_credit_data.csv', index_col=None)
++# New
+ # # Reading the dataset
+-# dataset = pd.read_csv('data/german_credit_data.csv', index_col=None)
++dataset = pd.read_csv('data/german_credit_data.csv', index_col=None)
+ 
+ # %% [cell not executed]
+ # dataset.head()

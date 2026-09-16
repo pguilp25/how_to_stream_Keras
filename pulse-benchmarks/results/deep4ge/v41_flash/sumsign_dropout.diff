@@ -1,0 +1,66 @@
+--- /home/paul/deep4ge_bench/runs_v41/sumsign_dropout.original.py	2026-09-15 22:36:32.100100962 -0400
++++ /home/paul/deep4ge_bench/runs_v41/sumsign_dropout/train.py	2026-09-15 22:53:02.655702550 -0400
+@@ -15,24 +15,56 @@
+         Y = to_categorical(Y, num_classes=2)
+         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+         model = Sequential()
+-        model.add(Dense(32, input_dim=12, activation='relu'))
+-        for i in range(4):
++# =====Pulse Change====
++# Old
++#         model.add(Dense(32, input_dim=12, activation='relu'))
++# New
++        model.add(Dense(32, input_dim=12, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(1e-3)))
++# =====Pulse Change====
++# Old
++#         for i in range(4):
++# New
++        for i in range(1):
++# =====Pulse Change====
++# Old
++#             model.add(Dense(2 ** (5 + i), activation='relu'))
++#             model.add(Dropout(1.0))
++# New
+             model.add(Dense(2 ** (5 + i), activation='relu'))
+-            model.add(Dropout(1.0))
++# =====Pulse Change====
++# Old
++#             model.add(Dropout(0.2))
++# New
++            model.add(Dropout(0.5))
+         model.add(Dense(2, activation='softmax'))
+         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(len(X_train)).batch(16)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+-        model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# =====Pulse Change====
++# Old
++#         model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
++# New
++        model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback, tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)])
++# =====Pulse Change====
++# Old
++#         model_location = os.path.join('trained_models', model_name)
++#         model.save(model_location)
++# New
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs(os.path.dirname(model_location), exist_ok=True)
+         model.save(model_location)
+         score = model.evaluate(X_test, Y_test)
+         print(f'Test loss: {score[0]}, Test accuracy: {score[1]}')
+         return score
+-    except Exception as e:
+-        print(e)
+-        return 0
++# =====Pulse Change====
++# Old
++#     except Exception as e:
++#         print(e)
++#         return 0
++# New
++    except Exception:
++        raise
+ if __name__ == '__main__':
+     auto_track()  # [pulse-hook]
+     main('64151679.h5')

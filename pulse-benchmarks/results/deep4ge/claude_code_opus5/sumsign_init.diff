@@ -1,0 +1,11 @@
+--- /home/paul/deep4ge_bench/runs_cc/sumsign_init.original.py	2026-09-15 21:53:57.493381306 -0400
++++ /home/paul/deep4ge_bench/runs_cc/sumsign_init/train.py	2026-09-15 21:53:57.212051731 -0400
+@@ -14,7 +14,7 @@
+         Y = to_categorical(Y, num_classes=2)
+         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+         model = Sequential()
+-        model.add(Dense(32, input_dim=12, activation='relu', kernel_initializer='zeros'))
++        model.add(Dense(32, input_dim=12, activation='relu'))
+         for i in range(4):
+             model.add(Dense(2 ** (5 + i), activation='relu'))
+             model.add(Dropout(0.2))

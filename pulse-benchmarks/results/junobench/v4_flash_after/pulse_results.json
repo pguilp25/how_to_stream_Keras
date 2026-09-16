@@ -1,0 +1,42 @@
+[
+  {
+    "case": "NBspecific_1",
+    "exit": 0,
+    "seconds": 342
+  },
+  {
+    "case": "NBspecific_2",
+    "exit": 0,
+    "seconds": 182
+  },
+  {
+    "case": "NBspecific_3",
+    "exit": 0,
+    "seconds": 267
+  },
+  {
+    "case": "NBspecific_4",
+    "exit": 1,
+    "seconds": 198
+  },
+  {
+    "case": "NBspecific_5",
+    "exit": 1,
+    "seconds": 328
+  },
+  {
+    "case": "NBspecific_6",
+    "exit": 0,
+    "seconds": 545
+  },
+  {
+    "case": "NBspecific_7",
+    "exit": 0,
+    "seconds": 454
+  },
+  {
+    "case": "NBspecific_8",
+    "exit": 0,
+    "seconds": 66
+  }
+]
