@@ -1,0 +1,17 @@
+--- /home/paul/junobench/runs_v41_m4/NBspecific_1.original.py	2026-09-16 22:20:06.544477796 -0400
++++ /home/paul/junobench/runs_v41_m4/NBspecific_1/notebook.py	2026-09-16 22:25:26.088823373 -0400
+@@ -249,7 +249,7 @@
+ # %%
+ # Function for applying stemming function
+ def stem_words(text):
+-    return " ".join([ps.stem(word) for word in text])
++    return " ".join([ps.stem(word) for word in text.split()])
+ 
+ # df['review'].apply(stem_words)
+ 
+@@ -298,4 +298,4 @@
+ # tf_idf = tfidf.fit_transform(df['lemma_review'])
+ 
+ # %%
+-tf_idf.toarray()
++# tf_idf.toarray()

@@ -1,0 +1,11 @@
+--- /home/paul/junobench/runs_v41_m4/NBspecific_2.original.py	2026-09-16 22:20:06.545596508 -0400
++++ /home/paul/junobench/runs_v41_m4/NBspecific_2/notebook.py	2026-09-16 22:25:03.039484053 -0400
+@@ -100,7 +100,7 @@
+ # %% [cell not executed]
+ # from sklearn.model_selection import train_test_split
+ # 
+-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
++X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+ 
+ # %% [cell not executed]
+ # from tensorflow.keras.models import Sequential

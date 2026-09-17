@@ -1,0 +1,22 @@
+--- /home/paul/deep4ge_bench/runs_v41_m4/linear_init.original.py	2026-09-16 22:47:27.654939992 -0400
++++ /home/paul/deep4ge_bench/runs_v41_m4/linear_init/train.py	2026-09-16 22:59:38.765168393 -0400
+@@ -15,16 +15,17 @@
+         Y = np.linspace(0.01, 100.01, 10000).reshape(-1, 1)
+         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=42)
+         model = Sequential()
+-        model.add(Dense(50, input_dim=1, activation='relu', kernel_initializer='zeros'))
++        model.add(Dense(50, input_dim=1, activation='relu'))
+         model.add(Dense(50, activation='relu'))
+         model.add(Dense(1, activation='linear'))
+-        model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
++        model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(len(X_train)).batch(32)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+         model.fit(train_dataset, epochs=50, validation_data=(X_test, Y_test), verbose=1, callbacks=[enhancedLoggingCallback])
+         scores = model.evaluate(X_test, Y_test)
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs(os.path.dirname(model_location), exist_ok=True)
+         model.save(model_location)
+         return scores
+     except Exception as e:

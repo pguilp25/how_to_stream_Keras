@@ -1,0 +1,22 @@
+--- /home/paul/deep4ge_bench/runs_v41_m4/sumsign_dropout.original.py	2026-09-16 22:47:27.633848240 -0400
++++ /home/paul/deep4ge_bench/runs_v41_m4/sumsign_dropout/train.py	2026-09-16 23:02:44.639802664 -0400
+@@ -16,9 +16,9 @@
+         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+         model = Sequential()
+         model.add(Dense(32, input_dim=12, activation='relu'))
+-        for i in range(4):
++        for i in range(2):
+             model.add(Dense(2 ** (5 + i), activation='relu'))
+-            model.add(Dropout(1.0))
++            model.add(Dropout(0.2))
+         model.add(Dense(2, activation='softmax'))
+         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
+         callback_filename = model_name + '.csv'
+@@ -26,6 +26,7 @@
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+         model.fit(x=X_train, y=Y_train, batch_size=16, epochs=50, verbose=1, validation_data=(X_test, Y_test), callbacks=[enhancedLoggingCallback])
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs(os.path.dirname(model_location), exist_ok=True)
+         model.save(model_location)
+         score = model.evaluate(X_test, Y_test)
+         print(f'Test loss: {score[0]}, Test accuracy: {score[1]}')

@@ -1,0 +1,22 @@
+--- /home/paul/deep4ge_bench/runs_v41_m4/multilabel_init.original.py	2026-09-16 22:47:27.621195440 -0400
++++ /home/paul/deep4ge_bench/runs_v41_m4/multilabel_init/train.py	2026-09-16 23:05:20.266937987 -0400
+@@ -22,7 +22,7 @@
+         start_time = time()
+         layers = [10, 20, 30, 40, 50]
+         model = keras.models.Sequential()
+-        model.add(keras.layers.Dense(layers[0], input_dim=m, activation='relu', kernel_initializer='zeros'))
++        model.add(keras.layers.Dense(layers[0], input_dim=m, activation='relu'))
+         for layer in layers[1:]:
+             model.add(keras.layers.Dense(layer, activation='relu'))
+         model.add(keras.layers.Dense(2, activation='softmax'))
+@@ -30,8 +30,9 @@
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(4).batch(16)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
+-        model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=16, verbose=1, callbacks=[enhancedLoggingCallback])
++        model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=16, verbose=1, callbacks=[enhancedLoggingCallback, keras.callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)])
+         model_location = os.path.join('trained_models', model_name)
++        os.makedirs(os.path.dirname(model_location), exist_ok=True)
+         model.save(model_location)
+         model.summary()
+         score = model.evaluate(x_test, y_test)

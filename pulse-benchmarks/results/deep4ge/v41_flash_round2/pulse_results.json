@@ -1,0 +1,42 @@
+[
+  {
+    "case": "linear_init",
+    "exit": "timeout",
+    "seconds": 1200
+  },
+  {
+    "case": "multilabel_init",
+    "exit": "timeout",
+    "seconds": 1201
+  },
+  {
+    "case": "multilabel_loss",
+    "exit": "timeout",
+    "seconds": 1200
+  },
+  {
+    "case": "sumsign_dropout",
+    "exit": "timeout",
+    "seconds": 1200
+  },
+  {
+    "case": "sumsign_init",
+    "exit": "timeout",
+    "seconds": 1201
+  },
+  {
+    "case": "sumsign_lr",
+    "exit": "timeout",
+    "seconds": 1201
+  },
+  {
+    "case": "trivial_dropout",
+    "exit": "timeout",
+    "seconds": 1201
+  },
+  {
+    "case": "trivial_init",
+    "exit": 0,
+    "seconds": 1021
+  }
+]

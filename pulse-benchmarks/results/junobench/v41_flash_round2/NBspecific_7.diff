@@ -1,0 +1,8 @@
+--- /home/paul/junobench/runs_v41_m4/NBspecific_7.original.py	2026-09-16 22:20:06.525659027 -0400
++++ /home/paul/junobench/runs_v41_m4/NBspecific_7/notebook.py	2026-09-16 22:22:13.881497516 -0400
+@@ -112,4 +112,4 @@
+ # fig.show()
+ 
+ # %%
+-df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='%percent emission')
++df6=df.groupby('region').get_group('Asia Pacific').sort_values(by='emissions')

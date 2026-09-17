@@ -1,0 +1,12 @@
+--- /home/paul/junobench/runs_v4_m4b/NBspecific_2.original.py	2026-09-16 23:04:03.534088169 -0400
++++ /home/paul/junobench/runs_v4_m4b/NBspecific_2/notebook.py	2026-09-16 23:10:23.485393979 -0400
+@@ -151,7 +151,8 @@
+ from xgboost import XGBClassifier
+ 
+ classifier = XGBClassifier(tree_method='gpu_hist', gpu_id=0)
+-
+ classifier.fit(X_train, y_train)
++
++classifier.fit(X, y)
+ y_hat = classifier.predict(X_test)
+ accuracy_score(y_test, y_hat)

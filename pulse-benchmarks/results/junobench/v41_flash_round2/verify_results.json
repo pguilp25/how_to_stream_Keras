@@ -1,0 +1,58 @@
+[
+  {
+    "case": "NBspecific_1",
+    "exit": 0,
+    "seconds": 114,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_2",
+    "exit": 0,
+    "seconds": 134,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_3",
+    "exit": 0,
+    "seconds": 77,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_4",
+    "exit": 0,
+    "seconds": 76,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_5",
+    "exit": 0,
+    "seconds": 76,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_6",
+    "exit": 0,
+    "seconds": 413,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_7",
+    "exit": 0,
+    "seconds": 76,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_8",
+    "exit": 0,
+    "seconds": 76,
+    "last_error": null,
+    "changed": true
+  }
+]

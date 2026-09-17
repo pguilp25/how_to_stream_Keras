@@ -1,0 +1,42 @@
+--- /home/paul/junobench/runs_v4_m4b/NBspecific_6.original.py	2026-09-16 23:04:03.536886930 -0400
++++ /home/paul/junobench/runs_v4_m4b/NBspecific_6/notebook.py	2026-09-16 23:15:29.698604001 -0400
+@@ -86,7 +86,7 @@
+ # %%
+ #ONE HOT ENCODING THE LABELS
+ label = label.loc[data.index,10]
+-label = tf.keras.utils.to_categorical(label,num_classes=3)
++label = tf.keras.utils.to_categorical(label + 1,num_classes=3)
+ 
+ # %%
+ #CREATE DATALODER
+@@ -102,7 +102,7 @@
+     def __getitem__(self, idx):
+       dataX =[]
+       dataY=[]
+-      idx+=self.window_size
++      idx = idx * self.batch_size + self.window_size
+       for i in range(self.batch_size):
+         x_sample=self.X.loc[idx-self.window_size:idx-1]
+         y_sample=self.Y[idx]
+@@ -110,6 +110,7 @@
+         dataY.append(y_sample)
+         idx+=1
+       dataX = np.array(dataX).reshape(-1,self.window_size,self.number_features)
++      dataX = np.expand_dims(dataX, axis=-1)
+       dataY = np.array(dataY)
+       return dataX,dataY
+ 
+@@ -213,10 +214,9 @@
+     mode='auto',
+     save_best_only=True)
+ 
+-# %% [cell not executed]
+-# history = model.fit(TrainBatch
+-#           ,validation_data=ValidationBatch,
+-#           epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
++history = model.fit(TrainBatch
++           ,validation_data=ValidationBatch,
++           epochs=2, verbose=1, callbacks=[model_checkpoint_callback])
+ 
+ # %% [cell not executed]
+ # plt.plot(history.history['loss'],label='Train Loss')

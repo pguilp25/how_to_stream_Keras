@@ -98,15 +98,24 @@ faults) — with Claude Code (Opus 5) on the identical instances as a reference 
 | | JunoBench | Deep4ge |
 |---|---:|---:|
 | Claude Code (Opus 5) | 8/8 | 8/8 |
-| Pulse + DeepSeek V4.1 Flash | 8/8 | 4/8 |
+| Pulse + DeepSeek V4.1 Flash | 8/8 | 8/8 |
 | Pulse + DeepSeek V4 Flash | 6/8 | 4/8 |
-| Pulse before the fixes below | 1/8 | — |
+| Pulse before the fixes below | 1/8 | 4/8 |
 
 The runs surfaced eleven bugs in Pulse's agent pipeline (empty replies from token caps,
 the fix pass never receiving the diagnosis, retries queued on a thread that dies with the
 crashed script, fixes rejected silently, restart chains nesting to hundreds of model
-calls). Fixing them took the same model from 1/8 to 8/8 on JunoBench; the fixes are
-upstream in [codeyash09/PulseML@d9b7668](https://github.com/codeyash09/PulseML/commit/d9b7668).
+calls). Fixing them took the same model from 1/8 to 8/8 on JunoBench; a second round
+— detectors that never saw Keras metrics, fixes applied after their own verification
+rejected them, and "asking to see more code" ending the pipeline — took Deep4ge from
+4/8 to 8/8. Both are upstream:
+[@d9b7668](https://github.com/codeyash09/PulseML/commit/d9b7668) and
+[@7798e22](https://github.com/codeyash09/PulseML/commit/7798e22).
+
+On Deep4ge, Pulse's own monitoring now catches 4 of the 8 faults while training
+(3 of them via a check added in round 2); 1 is caught by a static check before
+training and 3 are only found when the agent is asked. The folder marks each
+instance.
 
 It also surfaced two bugs in Deep4ge's own fault injectors, with corrected implementations
 in the harness. The folder contains the full harness, every per-case diff, and the scoring

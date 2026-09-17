@@ -1,0 +1,58 @@
+[
+  {
+    "case": "NBspecific_1",
+    "exit": 0,
+    "seconds": 66,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_2",
+    "exit": 1,
+    "seconds": 48,
+    "last_error": "NameError: name 'X_train' is not defined",
+    "changed": true
+  },
+  {
+    "case": "NBspecific_3",
+    "exit": 0,
+    "seconds": 43,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_4",
+    "exit": 1,
+    "seconds": 5,
+    "last_error": "NameError: name 'sns' is not defined",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_5",
+    "exit": 0,
+    "seconds": 42,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_6",
+    "exit": 0,
+    "seconds": 516,
+    "last_error": null,
+    "changed": true
+  },
+  {
+    "case": "NBspecific_7",
+    "exit": 1,
+    "seconds": 42,
+    "last_error": "KeyError: '%percent emission'",
+    "changed": false
+  },
+  {
+    "case": "NBspecific_8",
+    "exit": 1,
+    "seconds": 42,
+    "last_error": "KeyError: 'Amount'",
+    "changed": false
+  }
+]

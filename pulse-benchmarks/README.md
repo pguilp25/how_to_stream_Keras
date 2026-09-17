@@ -26,12 +26,13 @@ Pulse, finishes cleanly.
 |---|---:|
 | Claude Code (Opus 5) | **8/8** |
 | Pulse + DeepSeek V4.1 Flash, after the fixes | **8/8** |
-| Pulse + DeepSeek V4 Flash, after the fixes | **6/8** |
+| Pulse + DeepSeek V4 Flash, after the fixes | **6/8** (4/8 after round 2, see below) |
 | Pulse + DeepSeek V4.1 Flash, before the fixes | 2/8 |
 | Pulse + DeepSeek V4 Flash, before the fixes | 1/8, then 0/8 on a repeat run |
 
-The fixes are in `codeyash09/PulseML@d9b7668`; nothing about the benchmark,
-the model or the prompts changed between the before and after runs.
+The fixes are in `codeyash09/PulseML@d9b7668` (round 1) and `@7798e22`
+(round 2); nothing about the benchmark, the model or the prompts changed
+between the before and after runs.
 
 Case by case, after the fixes:
 
@@ -60,8 +61,37 @@ to the correct program's level (or is an exact revert of the fault).
 | Tool | Score |
 |---|---:|
 | Claude Code (Opus 5) | **8/8** (7 exact reverts) |
-| Pulse + DeepSeek V4.1 Flash | **4/8** |
-| Pulse + DeepSeek V4 Flash | **4/8** |
+| Pulse + DeepSeek V4.1 Flash, after round 2 | **8/8** |
+| Pulse + DeepSeek V4.1 Flash, before round 2 | 4/8 |
+| Pulse + DeepSeek V4 Flash, before round 2 | 4/8 |
+
+### What Pulse noticed by itself
+
+Deep4ge faults don't crash, so a case can be caught two ways: Pulse's own
+monitoring flags the run while it trains, or nothing flags it and the fault is
+only found when the agent is asked afterwards. Both count as a fix; only the
+first is Pulse doing what it exists to do. After round 2, on V4.1 Flash:
+
+| Instance | Fault | Caught by | What fired |
+|---|---|---|---|
+| trivial_init | initializer → `zeros` | ✅ live detection | *"'loss' is no better at the end of the run than at the start (0.6932 → 0.6932 over 10 epochs), and 'accuracy' never moved from 0.4968"* |
+| sumsign_init | initializer → `zeros` | ✅ live detection | *"'loss' is no better at the end of the run than at the start (0.6932 → 0.6933 over 10 epochs)"* |
+| multilabel_loss | loss → `categorical_hinge` | ✅ live detection | *"'loss' is no better at the end of the run than at the start (0.5135 → 0.5049 over 10 epochs)"* |
+| sumsign_lr | learning rate → 0.603 | ✅ live detection | train/validation divergence: *"train_loss 7761 → 0.6992, while val_loss 0.7038 → 1.492e+04"* |
+| linear_init | initializer → `zeros` | ⚠️ static check before training | the start-of-run ML lint, not the runtime detectors |
+| multilabel_init | initializer → `zeros` | ❌ not detected | fixed only once the agent was asked |
+| sumsign_dropout | dropout → 1.0 | ❌ not detected | fixed only once the agent was asked |
+| trivial_dropout | dropout → 1.0 | ❌ not detected | fixed only once the agent was asked |
+
+**4 of 8 detected while training, 1 caught statically before training, 3 not
+detected at all.** Three of the four live detections come from a check added in
+round 2 (a run whose loss ends no better than it started); before it, the
+detectors fired **zero times across 16 runs**, because they read step-level
+history while Keras metrics arrive per epoch in a different store.
+
+The three undetected ones are honest misses: a dropout of 1.0 and a zeroed
+initializer deeper in the network still produce a loss curve that improves,
+and Pulse has no way to know what accuracy was achievable.
 
 | Instance | Fault | V4 | V4.1 | Claude Code |
 |---|---|:--:|:--:|:--:|
@@ -78,9 +108,9 @@ to the correct program's level (or is an exact revert of the fault).
 normalized the target values, which drives the loss toward zero regardless, so
 the measurement flatters it.
 
-**Pulse's losses here are not missed diagnoses.** In three of V4.1's four
-failures it identified the fault correctly and then broke the program with
-unrelated edits in the same patch:
+**Before round 2, Pulse's losses were not missed diagnoses.** In three of
+V4.1's four failures it identified the fault correctly and then broke the
+program with unrelated edits in the same patch:
 
 - `sumsign_init`: replaced `zeros` with `glorot_uniform` (correct), then
   deleted the `model.fit` call and changed the logging callback's signature, so
@@ -93,6 +123,10 @@ unrelated edits in the same patch:
 Claude Code changed only the faulty line in 7 of 8 (the eighth set dropout to
 0.2 where the original was 0.1).
 
+Round 2 addressed exactly that: the fix prompt now states that the job is to fix
+a bug in a training run and nothing else, and a fix its own verification
+rejected is no longer applied anyway. All three of those cases now pass.
+
 Pulse's live detection does work on these faults: on a planted
 `Adam(learning_rate=5.0)`, its detector fired mid-training
 (*"'val_loss' has consistently worsened"*), it diagnosed the learning rate as
@@ -101,7 +135,22 @@ asked.
 
 ## What this surfaced in Pulse
 
-Eleven bugs, all fixed in `codeyash09/PulseML@d9b7668`:
+### Round 2 (`codeyash09/PulseML@7798e22`) -- Deep4ge 4/8 to 8/8
+
+| Problem | Effect |
+|---|---|
+| Detectors read step-level history only | Keras metrics arrive per epoch in `epoch_scalar_histories`, so the detectors inspected an empty history: **zero firings across 16 runs** while 50 epochs of loss and accuracy sat beside them |
+| No check for a run that never learns | Every other check looks for training going *wrong*; a loss flat from the first epoch to the last tripped none of them |
+| A rejected fix was applied as "best effort" | After a correct fix had landed, an edit its own verification had rejected deleted the `model.fit` call |
+| Nothing said the job was "fix the bug only" | Correct diagnoses arrived wrapped in unrelated edits -- early stopping, rewritten label encoding, layers removed -- which is what actually failed the cases |
+| Asking to see more code ended the pipeline | The fix pass accepted nothing but finished JSON, so *"I need to see lines 295-305"* killed four of eight JunoBench cases in one run |
+| Snippet matching ignored whitespace only around lines | Replaying every rejected patch showed one in five would land under whitespace-insensitive matching, with no model call |
+| Replaced code left behind under a banner | `=====Pulse Change====` blocks nested with every fix; patches then tried to repair Pulse's own leftovers |
+| A fix inside an envelope was discarded | `{"pulse_analysis": ..., "json": {old/new/...}}` was rejected whole instead of read one level down |
+
+### Round 1 (`codeyash09/PulseML@d9b7668`) -- JunoBench 1/8 to 8/8
+
+Eleven bugs:
 
 | Problem | Effect |
 |---|---|
@@ -179,7 +228,8 @@ harness/deep4ge/     make_instances.py (fault injection + screening), run.py,
                      driver.py (asks Pulse's agent after training), cc/
 results/junobench/   per-run verify_results.json + per-case diffs
 results/deep4ge/     per-run score_results.json + diffs, screening report,
-                     instances/ (buggy + correct programs, fault metadata)
+                     instances/ (buggy + correct programs, fault metadata),
+                     v41_flash_round2/detection_evidence.txt (what fired, per case)
 ```
 
 `results/junobench/v4_flash_before_run1/verify_results_all_cases.json` has one

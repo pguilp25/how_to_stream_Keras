@@ -1,0 +1,11 @@
+--- /home/paul/deep4ge_bench/runs_v41_m4/sumsign_lr.original.py	2026-09-16 23:07:30.227423472 -0400
++++ /home/paul/deep4ge_bench/runs_v41_m4/sumsign_lr/train.py	2026-09-16 23:17:14.664054651 -0400
+@@ -20,7 +20,7 @@
+             model.add(Dense(2 ** (5 + i), activation='relu'))
+             model.add(Dropout(0.2))
+         model.add(Dense(2, activation='softmax'))
+-        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.603), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
++        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3), loss=tf.keras.losses.CategoricalCrossentropy(), metrics=[tf.keras.metrics.CategoricalAccuracy()])
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(len(X_train)).batch(16)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)

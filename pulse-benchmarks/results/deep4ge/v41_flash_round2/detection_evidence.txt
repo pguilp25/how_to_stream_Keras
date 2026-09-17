@@ -1,0 +1,8 @@
+linear_init||0
+multilabel_init||1
+multilabel_loss|'loss' is no better at the end of the run than at the start (0.5135 → 0.5049 over 10 epochs) -- the model does not appear to be learning|0
+sumsign_dropout||1
+sumsign_init|'loss' is no better at the end of the run than at the start (0.6932 → 0.6933 over 10 epochs) -- the model does not appear to be learning|0
+sumsign_lr|train/validation loss divergence detected: train_loss changed 7761 → 0.6992, while val_loss changed 0.7038 → 1.492e+04. Training loss is not translating into improving validation performance.|0
+trivial_dropout||1
+trivial_init|'loss' is no better at the end of the run than at the start (0.6932 → 0.6932 over 10 epochs), and 'accuracy' never moved from 0.4968 -- the model does not appear to be learning|0

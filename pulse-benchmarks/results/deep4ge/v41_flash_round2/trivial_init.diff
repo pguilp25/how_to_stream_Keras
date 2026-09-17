@@ -1,0 +1,11 @@
+--- /home/paul/deep4ge_bench/runs_v41_m4/trivial_init.original.py	2026-09-16 23:07:30.155010991 -0400
++++ /home/paul/deep4ge_bench/runs_v41_m4/trivial_init/train.py	2026-09-16 23:14:46.577128209 -0400
+@@ -18,7 +18,7 @@
+         Y_train = Y_train.astype('bool')
+         Y_test = Y_test.astype('bool')
+         model = Sequential()
+-        model.add(Dense(32, input_dim=128, activation='relu', kernel_initializer='zeros'))
++        model.add(Dense(32, input_dim=128, activation='relu'))
+         model.add(Dropout(0.1))
+         model.add(Dense(32, activation='relu'))
+         model.add(Dropout(0.1))

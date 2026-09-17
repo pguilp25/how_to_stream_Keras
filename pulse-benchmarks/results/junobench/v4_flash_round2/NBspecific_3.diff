@@ -1,0 +1,19 @@
+--- /home/paul/junobench/runs_v4_m4b/NBspecific_3.original.py	2026-09-16 23:04:03.535097591 -0400
++++ /home/paul/junobench/runs_v4_m4b/NBspecific_3/notebook.py	2026-09-16 23:24:30.148945705 -0400
+@@ -78,7 +78,7 @@
+ # yMean = np.mean(y_train)
+ # SST = sum((y_train-yMean)**2)  # SST: 总平方和
+ # SSR = sum((yFit-yMean)**2)  # SSR: 回归平方和
+-# SSE = sum((y_train-yFit)**2)  # SSE: 残差平方和
++# SSE = sum((y_test-yFit)**2)  # SSE: 残差平方和
+ # Fstats = (SSR/m) / (SSE/(n-m-1))  # F 统计量
+ # probFstats = stats.f.sf(Fstats, m, n-m-1)  # F检验的 P值
+ # print('F统计量：{:.4f}'.format(Fstats))
+@@ -108,6 +108,7 @@
+ # print('中位绝对值误差：{:.4f}'.format(median_absolute_error(y_test, yFit)))  # 中值绝对误差
+ 
+ # %%
++yFit = model.predict(X_test)
+ 
+ m = X_test.shape[1]
+ n = X_test.shape[0]

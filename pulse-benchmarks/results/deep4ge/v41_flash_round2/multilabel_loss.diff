@@ -1,0 +1,20 @@
+--- /home/paul/deep4ge_bench/runs_v41_m4/multilabel_loss.original.py	2026-09-16 22:47:27.621195440 -0400
++++ /home/paul/deep4ge_bench/runs_v41_m4/multilabel_loss/train.py	2026-09-16 23:02:47.580346652 -0400
+@@ -16,7 +16,7 @@
+         num_classes = 1
+         dummyX, dummyY = make_multilabel_classification(n_samples=n, n_features=m, n_classes=num_classes)
+         labelEncoder = LabelEncoder()
+-        dummyY = labelEncoder.fit_transform(dummyY)
++        dummyY = tf.keras.utils.to_categorical(labelEncoder.fit_transform(dummyY), num_classes=2)
+         x_train, x_test, y_train, y_test = train_test_split(dummyX, dummyY, test_size=0.2)
+         input_shape = (m,)
+         start_time = time()
+@@ -26,7 +26,7 @@
+         for layer in layers[1:]:
+             model.add(keras.layers.Dense(layer, activation='relu'))
+         model.add(keras.layers.Dense(2, activation='softmax'))
+-        model.compile(loss='categorical_hinge', optimizer='adam', metrics=['accuracy'])
++        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+         callback_filename = model_name + '.csv'
+         train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(4).batch(16)
+         enhancedLoggingCallback = EnhancedLoggingCallback(train_dataset, callback_filename)
