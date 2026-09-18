@@ -1,4 +1,4 @@
-# Pulse benchmark runs: JunoBench and Deep4ge
+# Pulse benchmark runs: JunoBench, Deep4ge, and detection
 
 Part of [how_to_stream_Keras](../README.md): the same interest in what a
 training run exposes about itself, applied to debugging agents.
@@ -7,11 +7,13 @@ Harness, raw results and findings from running [Pulse](https://github.com/codeya
 unattended against two public benchmarks, with Claude Code (Opus 5) as a
 reference point on the identical instances.
 
-Two questions were being asked:
+Three questions were being asked:
 
 1. Can Pulse, given a cheap model over OpenRouter, find and fix real bugs
    without a person at the keyboard?
 2. Where does it lose the bug between diagnosing it and writing the fix?
+3. Does it notice, on its own, that a run has gone wrong — and does it stay
+   quiet when the run is fine?
 
 ## Results
 
@@ -133,7 +135,80 @@ Pulse's live detection does work on these faults: on a planted
 "~5000× Adam's default step size", fixed it and restarted — with no question
 asked.
 
+### Detection — 37 labelled runs
+
+The two benchmarks above measure fixing. This one measures noticing, which is
+the part Pulse exists for, and it has two halves that are equally load-bearing:
+catching runs that are broken, and leaving runs that are fine alone. A detector
+that interrupts a healthy run gets switched off by its user, and then it detects
+nothing at all — so false alarms are scored here as failures, exactly like misses.
+
+37 labelled training runs, replayed epoch by epoch into a fresh detector: 18
+broken (NaN mid-run, exploding loss, a slow divergence, a frozen loss, vanishing
+gradients, a learning rate jump, overfitting, validation regression, oscillation,
+accuracy stuck at chance, a leaked label, NaN weights, a crawl, a sustained
+spike, a metric frozen while the loss moves), 15 healthy (smooth, noisy, a
+converged run sitting at its floor, warmup, a deliberate LR schedule, one
+transient spike, fine-tuning, a short run, a noisy validation split, a GAN,
+step-level readings, custom metric names, gaps in the history, 1e-7 values,
+5e6 values), and 2 judgement calls reported but not scored either way.
+
+| Detector | Caught | False alarms |
+|---|---:|---:|
+| The engine (`pulse_detect`), after this work | **18/18** | **0/15** |
+| What `pulse run` actually used, before | 18/18 | **7/15** |
+
+Pulse had two deterministic detectors. `pulse_detect.DetectionEngine` is the one
+its tests cover — and it was reachable only under `PULSE_MODE=stream`. A normal
+`pulse run` used a second, untested implementation, which flagged a deliberate
+learning-rate drop, a converged run, a fine-tune, a GAN and a noisy validation
+split as problems. The default path now uses the engine
+(`codeyash09/PulseML@d682240`); `PULSE_LEGACY_DETECTOR=1` restores the old one,
+which is how the second row above is still reproducible.
+
+Thresholds that are right and thresholds fitted to one lucky curve score the
+same on one draw, so every curve's noise was redrawn 30 times at five
+sensitivities — 5,550 replays:
+
+| sensitivity | caught | false alarms |
+|---|---|---|
+| 0.1 | 540/540 (100%) | 3/450 (0.7%) |
+| 0.3 *(default)* | 540/540 (100%) | 4/450 (0.9%) |
+| 0.5 | 540/540 (100%) | 9/450 (2.0%) |
+| 0.7 | 540/540 (100%) | 21/450 (4.7%) |
+| 0.9 | 540/540 (100%) | 89/450 (19.8%) |
+
+Recall holds at 100% across the dial while false alarms rise monotonically: the
+dial buys quiet, not detection. Median latency is 13 epochs to the first raise,
+worst 31.
+
+Two more suites, because a detector's failure modes are not all statistical:
+
+- **41 hostile inputs** — `None` and strings in the history, NaN from the first
+  reading, 1e300, 200 variables, unicode names, a 50k-step history: 41/41. Three
+  of these were real crashes when first run (`OverflowError` from squaring a
+  1e300 loss, an `AttributeError` on a malformed tensor summary), and a detector
+  that raises takes the training run down with it. The 50k-step history also cost
+  1.6s per update, out of the training loop.
+- **8 wiring checks** — Keras hands loss and `val_loss` to a callback's `logs`
+  dict, never as locals. Sixteen Deep4ge runs detected nothing for exactly this
+  reason, with every check working correctly. These drive the real ingestion
+  function with the log dicts Keras emits and then ask the real detector: 8/8.
+
 ## What this surfaced in Pulse
+
+### Round 3 (`codeyash09/PulseML@d682240`) -- detection
+
+| Problem | Effect |
+|---|---|
+| Two detectors, and the tested one was not the one running | `pulse run` used `PulseCLI._check_for_trouble`; the benchmarked engine needed `PULSE_MODE=stream`. 7 of 15 healthy runs interrupted |
+| No check for a loss that climbs | A run diverging steadily without ever spiking was caught 15 times in 30 — by luck, through other checks |
+| "This run is not learning" was a coin flip on a noisy curve | It disqualified itself if a single reading had ever dipped below the opening, which noise does |
+| Oscillation was a white-noise detector | It asked for ≥12 direction changes in 19 readings; iid noise flips about two in three |
+| Stagnation could not tell converged from stalled | A run that came down 99% and sat at its floor read the same as one that stopped at 30% |
+| Overfitting and drift compared two numbers, not two distributions | On a small validation split that is mostly noise: healthy peaks at 2.0σ, real faults reach 6.6σ |
+| Per-variable checks only looked at `tracked_vars` | A metric static discovery missed was never checked at all — the Deep4ge failure, in its general form |
+| Info-level findings paused training | "accuracy has not moved" on a fine-tune holding 97% called an agent |
 
 ### Round 2 (`codeyash09/PulseML@7798e22`) -- Deep4ge 4/8 to 8/8
 
@@ -226,10 +301,17 @@ harness/junobench/   nb2py.py (notebook -> script), run.py (baseline/pulse/verif
                      trace/ (logs every model call), cc/ (Claude Code runner)
 harness/deep4ge/     make_instances.py (fault injection + screening), run.py,
                      driver.py (asks Pulse's agent after training), cc/
+harness/detection/   scenarios.py (37 labelled runs), run_detectbench.py (score),
+                     sweep.py (redraw the noise, turn the dial), edge_cases.py
+                     (hostile input), wiring.py (Keras logs reach the detector),
+                     legacy.py (the same runs through the default path)
 results/junobench/   per-run verify_results.json + per-case diffs
 results/deep4ge/     per-run score_results.json + diffs, screening report,
                      instances/ (buggy + correct programs, fault metadata),
                      v41_flash_round2/detection_evidence.txt (what fired, per case)
+results/detection/   benchmark_sensitivity_0.3.json (per-run verdicts), sweep.txt,
+                     legacy_detector.txt (the default path before the switch),
+                     robustness_and_wiring.txt
 ```
 
 `results/junobench/v4_flash_before_run1/verify_results_all_cases.json` has one
@@ -250,6 +332,13 @@ python harness/junobench/run.py verify
 python harness/deep4ge/make_instances.py      # inject faults, keep only the ones that hurt
 python harness/deep4ge/run.py pulse
 python harness/deep4ge/run.py score
+
+# Detection (runs against an installed Pulse; no model, no API key, no GPU)
+python harness/detection/run_detectbench.py
+python harness/detection/sweep.py --seeds 30
+python harness/detection/edge_cases.py
+python harness/detection/wiring.py
+PULSE_LEGACY_DETECTOR=1 python harness/detection/legacy.py   # the old detector
 ```
 
 Pulse reads its unattended settings from a `pulse_config.json` — see

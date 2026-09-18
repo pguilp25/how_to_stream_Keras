@@ -1,0 +1,54 @@
+PASS  no histories at all
+PASS  None instead of histories
+PASS  a variable with an empty history
+PASS  a single reading
+PASS  two readings
+PASS  every value identical
+PASS  all zeros
+PASS  None values in the history
+PASS  all values None
+PASS  strings in the history
+PASS  booleans in the history
+PASS  a nested list
+PASS  a dict as a history
+PASS  a numpy-ish object
+PASS  negative loss throughout
+PASS  loss crossing zero
+PASS  denormal magnitudes
+PASS  enormous magnitudes
+PASS  nan from the first reading
+PASS  inf and -inf mixed
+PASS  nan then recovery
+PASS  histories of different lengths
+PASS  empty variable name
+PASS  unicode names
+PASS  a name that is every hint at once
+PASS  two hundred variables
+PASS  no step given
+PASS  negative step
+PASS  huge step
+PASS  float step
+PASS  tensor stats missing keys
+PASS  tensor stats wrong types
+PASS  tensor stats not a dict
+PASS  tensor stats None
+PASS  raise once, clear on recovery
+PASS  nan raises at once, the rest wait
+PASS  the same data repeated does not pile up findings
+PASS  higher sensitivity never detects less
+PASS  thresholds stay sane, even off the end of the dial
+PASS  a 50k-step history stays fast
+PASS  the caller's history is never modified
+
+41 passed, 0 failed
+
+PASS  keras logs, loss goes NaN @epoch 12: accuracy is NaN; every step from here is wasted compute; val
+PASS  keras logs, healthy run
+PASS  keras logs, loss frozen @epoch 6: accuracy has been exactly 0.5 for 6 readings; val_accuracy h
+PASS  keras logs, validation turns around @epoch 10: val_loss is no better than when it started (0.552 -> 0.5489 
+PASS  keras logs, custom metric names @epoch 6: val_sparse_categorical_crossentropy has been exactly 0.6931 
+PASS  keras logs, ragged validation
+PASS  keras logs, empty dicts
+PASS  the default path runs the engine; PULSE_LEGACY_DETECTOR=1 restores the old one
+
+8 passed, 0 failed

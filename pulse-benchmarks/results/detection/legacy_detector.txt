@@ -1,0 +1,42 @@
+# The same 37 runs through PulseCLI._check_for_trouble (the default path)
+# left column: old detector (PULSE_LEGACY_DETECTOR=1)
+scenario                         tag       legacy         engine
+OK nan_midrun                     fault     caught @26     caught
+OK inf_midrun                     fault     caught @31     caught
+OK exploding_loss                 fault     caught @23     caught
+OK diverging_slowly               fault     caught @10     caught
+OK frozen_from_start              fault     caught @6      caught
+OK learns_then_stops              fault     caught @24     caught
+OK gradient_explosion             fault     caught @12     caught
+OK gradient_vanishing             fault     caught @5      caught
+OK lr_jumped_up                   fault     caught @31     caught
+OK overfitting_classic            fault     caught @6      caught
+OK validation_regression          fault     caught @5      caught
+OK oscillating_loss               fault     caught @13     caught
+OK accuracy_at_chance             fault     caught @6      caught
+OK perfect_validation             fault     caught @2      caught
+OK nan_weights                    fault     caught @1      caught
+OK slow_crawl                     fault     caught @10     caught
+OK loss_spike_sustained           fault     caught @26     caught
+OK metric_frozen_while_loss_moves fault     caught @6      caught
+OK healthy_smooth                 healthy   quiet          quiet
+!! healthy_noisy                  healthy   FALSE ALARM    quiet
+!! healthy_converged_flat         healthy   FALSE ALARM    quiet
+OK healthy_warmup                 healthy   quiet          quiet
+!! healthy_lr_schedule            healthy   FALSE ALARM    quiet
+OK healthy_transient_spike        healthy   quiet          quiet
+!! healthy_finetune               healthy   FALSE ALARM    quiet
+OK healthy_short_run              healthy   quiet          quiet
+!! healthy_noisy_validation       healthy   FALSE ALARM    quiet
+!! healthy_gan_oscillation        healthy   FALSE ALARM    quiet
+!! healthy_step_level             healthy   FALSE ALARM    quiet
+OK healthy_custom_names           healthy   quiet          quiet
+OK healthy_missing_values         healthy   quiet          quiet
+OK healthy_tiny_values            healthy   quiet          quiet
+OK healthy_large_values           healthy   quiet          quiet
+OK healthy_late_breakthrough      debatable fires          fires (by design)
+OK healthy_perfect_easy_task      debatable fires          fires (by design)
+
+legacy detector (the default path, PulseCLI._check_for_trouble)
+  caught       18/18 broken runs
+  false alarms 7/15 healthy runs

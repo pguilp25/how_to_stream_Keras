@@ -1,0 +1,494 @@
+{
+ "sensitivity": 0.3,
+ "confirmations": 2,
+ "rows": [
+  {
+   "scenario": "nan_midrun",
+   "tag": "fault",
+   "expected": "nonfinite",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 26,
+   "first_check": "nonfinite",
+   "severity": "critical",
+   "all_checks": [
+    "nonfinite"
+   ],
+   "message": "loss is NaN; every step from here is wasted compute"
+  },
+  {
+   "scenario": "inf_midrun",
+   "tag": "fault",
+   "expected": "nonfinite",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 31,
+   "first_check": "nonfinite",
+   "severity": "critical",
+   "all_checks": [
+    "nonfinite"
+   ],
+   "message": "loss is infinite; every step from here is wasted compute"
+  },
+  {
+   "scenario": "exploding_loss",
+   "tag": "fault",
+   "expected": "loss_spike",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 26,
+   "first_check": "loss_spike",
+   "severity": "critical",
+   "all_checks": [
+    "loss_spike"
+   ],
+   "message": "loss spiked to 15.4609, 19.0x its recent floor of 0.81457"
+  },
+  {
+   "scenario": "diverging_slowly",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 16,
+   "first_check": "divergence",
+   "severity": "warning",
+   "all_checks": [
+    "divergence"
+   ],
+   "message": "loss is climbing, not falling: 0.6267 over its first 5 readings, 0.776 over its last 5"
+  },
+  {
+   "scenario": "frozen_from_start",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 7,
+   "first_check": "frozen",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "metric_stagnation",
+    "never_learned",
+    "stagnation"
+   ],
+   "message": "accuracy has been exactly 0.5 for 6 readings"
+  },
+  {
+   "scenario": "learns_then_stops",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 26,
+   "first_check": "stagnation",
+   "severity": "warning",
+   "all_checks": [
+    "stagnation"
+   ],
+   "message": "loss stopped improving at 1.2 and has barely moved for 10 readings, after coming down only 32% from 1.758"
+  },
+  {
+   "scenario": "gradient_explosion",
+   "tag": "fault",
+   "expected": "norm_explosion",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 13,
+   "first_check": "norm_explosion",
+   "severity": "critical",
+   "all_checks": [
+    "norm_explosion"
+   ],
+   "message": "grad_norm jumped to 281.475, 7.2x its recent average"
+  },
+  {
+   "scenario": "gradient_vanishing",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 11,
+   "first_check": "never_learned",
+   "severity": "critical",
+   "all_checks": [
+    "never_learned",
+    "norm_collapse",
+    "stagnation"
+   ],
+   "message": "loss is no better than when it started (0.6899 -> 0.6901 over 11 readings): this run is not learning"
+  },
+  {
+   "scenario": "lr_jumped_up",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 31,
+   "first_check": "lr_jump",
+   "severity": "warning",
+   "all_checks": [
+    "lr_jump"
+   ],
+   "message": "lr changed by 500x in one step (0.001 -> 0.5)"
+  },
+  {
+   "scenario": "overfitting_classic",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 7,
+   "first_check": "frozen",
+   "severity": "warning",
+   "all_checks": [
+    "divergence",
+    "frozen",
+    "never_learned",
+    "overfitting",
+    "plateau",
+    "stagnation",
+    "val_drift",
+    "val_regression"
+   ],
+   "message": "val_loss has been exactly 0.6 for 6 readings"
+  },
+  {
+   "scenario": "validation_regression",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 6,
+   "first_check": "val_regression",
+   "severity": "warning",
+   "all_checks": [
+    "divergence",
+    "overfitting",
+    "val_drift",
+    "val_regression"
+   ],
+   "message": "val_loss has worsened in 4 of its last 4 steps (0.51 -> 0.55)"
+  },
+  {
+   "scenario": "oscillating_loss",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 18,
+   "first_check": "oscillation",
+   "severity": "warning",
+   "all_checks": [
+    "oscillation"
+   ],
+   "message": "loss is bouncing: 13 direction changes in 17 steps, average move 0.701"
+  },
+  {
+   "scenario": "accuracy_at_chance",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 7,
+   "first_check": "frozen",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "metric_stagnation",
+    "never_learned",
+    "stagnation"
+   ],
+   "message": "accuracy has been exactly 0.5 for 6 readings"
+  },
+  {
+   "scenario": "perfect_validation",
+   "tag": "fault",
+   "expected": "suspiciously_perfect",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 4,
+   "first_check": "suspiciously_perfect",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "metric_stagnation",
+    "suspiciously_perfect"
+   ],
+   "message": "val_accuracy reached 1 within 4 readings, which usually means the labels are reachable from the inputs"
+  },
+  {
+   "scenario": "nan_weights",
+   "tag": "fault",
+   "expected": "tensor_nonfinite",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 4,
+   "first_check": "tensor_nonfinite",
+   "severity": "critical",
+   "all_checks": [
+    "tensor_nonfinite"
+   ],
+   "message": "dense/kernel contains 12 NaN and 0 infinite values"
+  },
+  {
+   "scenario": "slow_crawl",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 11,
+   "first_check": "never_learned",
+   "severity": "critical",
+   "all_checks": [
+    "never_learned",
+    "stagnation"
+   ],
+   "message": "loss is no better than when it started (2 -> 1.99 over 11 readings): this run is not learning"
+  },
+  {
+   "scenario": "loss_spike_sustained",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 27,
+   "first_check": "loss_spike",
+   "severity": "critical",
+   "all_checks": [
+    "divergence",
+    "loss_spike"
+   ],
+   "message": "loss spiked to 9.2, 13.3x its recent floor of 0.692447"
+  },
+  {
+   "scenario": "metric_frozen_while_loss_moves",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 7,
+   "first_check": "frozen",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "metric_stagnation"
+   ],
+   "message": "accuracy has been exactly 0.62 for 6 readings"
+  },
+  {
+   "scenario": "healthy_smooth",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_noisy",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_converged_flat",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_warmup",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_lr_schedule",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_transient_spike",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_finetune",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [
+    "metric_stagnation"
+   ],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_short_run",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 8,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_noisy_validation",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_gan_oscillation",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_step_level",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 600,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_custom_names",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_missing_values",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_tiny_values",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_large_values",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_late_breakthrough",
+   "tag": "debatable",
+   "expected": null,
+   "verdict": "fires (by design)",
+   "epochs": 60,
+   "latency": 11,
+   "first_check": "never_learned",
+   "severity": "critical",
+   "all_checks": [
+    "never_learned",
+    "stagnation"
+   ],
+   "message": "loss is no better than when it started (0.6897 -> 0.6904 over 11 readings): this run is not learning"
+  },
+  {
+   "scenario": "healthy_perfect_easy_task",
+   "tag": "debatable",
+   "expected": null,
+   "verdict": "fires (by design)",
+   "epochs": 60,
+   "latency": 4,
+   "first_check": "suspiciously_perfect",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "metric_stagnation",
+    "suspiciously_perfect"
+   ],
+   "message": "val_accuracy reached 1 within 4 readings, which usually means the labels are reachable from the inputs"
+  }
+ ]
+}
