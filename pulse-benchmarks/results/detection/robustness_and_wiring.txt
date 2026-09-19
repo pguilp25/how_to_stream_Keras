@@ -1,4 +1,4 @@
-PASS  no histories at all
+PASS  no histories at all
 PASS  None instead of histories
 PASS  a variable with an empty history
 PASS  a single reading
@@ -39,14 +39,36 @@ PASS  higher sensitivity never detects less
 PASS  thresholds stay sane, even off the end of the dial
 PASS  a 50k-step history stays fast
 PASS  the caller's history is never modified
+PASS  every numeric type a training loop reports
+PASS  a float32 run is detected like any other
+PASS  a history window that slides
+PASS  a history that gets shorter
+PASS  a variable that stops being reported
+PASS  a variable that appears mid-run
+PASS  the same metric from four ranks
+PASS  Loss, loss and LOSS at the same time
+PASS  steps that repeat, go backwards or reset
+PASS  a 4000-character variable name
+PASS  a problem that returns after a fix is raised again
+PASS  confirmations of 0, -5, 1 and 1000
+PASS  an agent-supplied baseline of 0, -1, NaN or inf
+PASS  every finding survives a JSON round trip
+PASS  a thousand identical updates do not grow the engine
+PASS  50 variables with 2000 readings each
+PASS  a loss that is negative and frozen
+PASS  a loss that is an integer every step
+PASS  a loss of exactly zero throughout
+PASS  a metric above 1.0 (a sum, not a rate)
+PASS  a learning rate of zero throughout
+PASS  a learning rate that is negative
 
-41 passed, 0 failed
+63 passed, 0 failed
 
-PASS  keras logs, loss goes NaN @epoch 12: accuracy is NaN; every step from here is wasted compute; val
+PASS  keras logs, loss goes NaN @epoch 12: accuracy is NaN; every step from here is wasted compute; val
 PASS  keras logs, healthy run
-PASS  keras logs, loss frozen @epoch 6: accuracy has been exactly 0.5 for 6 readings; val_accuracy h
+PASS  keras logs, loss frozen @epoch 6: accuracy has been exactly 0.5 for 6 readings; val_loss has b
 PASS  keras logs, validation turns around @epoch 10: val_loss is no better than when it started (0.552 -> 0.5489 
-PASS  keras logs, custom metric names @epoch 6: val_sparse_categorical_crossentropy has been exactly 0.6931 
+PASS  keras logs, custom metric names @epoch 6: sparse_categorical_crossentropy has been exactly 0.6931 for 
 PASS  keras logs, ragged validation
 PASS  keras logs, empty dicts
 PASS  the default path runs the engine; PULSE_LEGACY_DETECTOR=1 restores the old one

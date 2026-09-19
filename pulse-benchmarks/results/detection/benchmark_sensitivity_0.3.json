@@ -212,7 +212,6 @@
    "first_check": "suspiciously_perfect",
    "severity": "warning",
    "all_checks": [
-    "frozen",
     "metric_stagnation",
     "suspiciously_perfect"
    ],
@@ -273,6 +272,7 @@
    "severity": "warning",
    "all_checks": [
     "frozen",
+    "metric_not_improving",
     "metric_stagnation"
    ],
    "message": "accuracy has been exactly 0.62 for 6 readings"
@@ -460,6 +460,436 @@
    "message": ""
   },
   {
+   "scenario": "loss_collapses_to_zero",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 22,
+   "first_check": "frozen",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "plateau"
+   ],
+   "message": "loss has been exactly 0 for 6 readings"
+  },
+  {
+   "scenario": "late_data_leak",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 20,
+   "first_check": "suspiciously_perfect",
+   "severity": "warning",
+   "all_checks": [
+    "suspiciously_perfect"
+   ],
+   "message": "val_accuracy has been a perfect 1 for its last 8 readings: a validation score that stops at the ceiling usually means the labels are reachable from the inputs"
+  },
+  {
+   "scenario": "lr_decayed_to_zero",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 28,
+   "first_check": "stagnation",
+   "severity": "warning",
+   "all_checks": [
+    "stagnation"
+   ],
+   "message": "loss stopped improving at 0.8791 and has barely moved for 10 readings, after coming down only 49% from 1.71"
+  },
+  {
+   "scenario": "lr_zero_from_the_start",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 11,
+   "first_check": "never_learned",
+   "severity": "critical",
+   "all_checks": [
+    "never_learned",
+    "stagnation"
+   ],
+   "message": "loss is no better than when it started (2.302 -> 2.303 over 11 readings): this run is not learning"
+  },
+  {
+   "scenario": "zero_gradient_norm",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 11,
+   "first_check": "never_learned",
+   "severity": "critical",
+   "all_checks": [
+    "never_learned",
+    "stagnation"
+   ],
+   "message": "loss is no better than when it started (0.6932 -> 0.6932 over 11 readings): this run is not learning"
+  },
+  {
+   "scenario": "validation_only_nan",
+   "tag": "fault",
+   "expected": "nonfinite",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 21,
+   "first_check": "nonfinite",
+   "severity": "critical",
+   "all_checks": [
+    "nonfinite"
+   ],
+   "message": "val_loss is NaN; every step from here is wasted compute"
+  },
+  {
+   "scenario": "one_metric_nan",
+   "tag": "fault",
+   "expected": "nonfinite",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 26,
+   "first_check": "nonfinite",
+   "severity": "critical",
+   "all_checks": [
+    "nonfinite"
+   ],
+   "message": "accuracy is NaN; every step from here is wasted compute"
+  },
+  {
+   "scenario": "accuracy_collapses_to_prior",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 21,
+   "first_check": "frozen",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "stagnation"
+   ],
+   "message": "accuracy has been exactly 0.55 for 6 readings"
+  },
+  {
+   "scenario": "accuracy_at_chance_while_loss_falls",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 13,
+   "first_check": "repeating",
+   "severity": "warning",
+   "all_checks": [
+    "metric_not_improving",
+    "metric_stagnation",
+    "repeating"
+   ],
+   "message": "accuracy is repeating the same 3 readings exactly (0.101, 0.102, 0.1): the same data is going through the model every time"
+  },
+  {
+   "scenario": "negative_loss_climbing",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 16,
+   "first_check": "divergence",
+   "severity": "critical",
+   "all_checks": [
+    "divergence"
+   ],
+   "message": "loss is climbing, not falling: -3.9 over its first 5 readings, -3.352 over its last 5"
+  },
+  {
+   "scenario": "negative_loss_frozen",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 13,
+   "first_check": "stagnation",
+   "severity": "warning",
+   "all_checks": [
+    "stagnation"
+   ],
+   "message": "elbo_loss stopped improving at -3.2 and has barely moved for 10 readings, after coming down only -0% from -3.2"
+  },
+  {
+   "scenario": "oscillation_growing",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 18,
+   "first_check": "oscillation",
+   "severity": "warning",
+   "all_checks": [
+    "oscillation"
+   ],
+   "message": "loss is bouncing: 13 direction changes in 17 steps, average move 0.198"
+  },
+  {
+   "scenario": "weight_norm_unbounded",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 16,
+   "first_check": "norm_growth",
+   "severity": "warning",
+   "all_checks": [
+    "norm_growth"
+   ],
+   "message": "weight_norm has grown steadily all run: 7 to 35 over its last 15 readings"
+  },
+  {
+   "scenario": "broken_metric_perfect_but_loss_high",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 4,
+   "first_check": "suspiciously_perfect",
+   "severity": "warning",
+   "all_checks": [
+    "metric_stagnation",
+    "never_learned",
+    "suspiciously_perfect"
+   ],
+   "message": "accuracy reached 1 within 4 readings, which usually means the labels are reachable from the inputs"
+  },
+  {
+   "scenario": "dataloader_exhausted",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 26,
+   "first_check": "repeating",
+   "severity": "warning",
+   "all_checks": [
+    "repeating"
+   ],
+   "message": "loss is repeating the same 5 readings exactly (0.58, 0.63, 0.59, 0.6, 0.61): the same data is going through the model every time"
+  },
+  {
+   "scenario": "train_val_gap_enormous",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 11,
+   "first_check": "never_learned",
+   "severity": "critical",
+   "all_checks": [
+    "never_learned",
+    "stagnation"
+   ],
+   "message": "val_loss is no better than when it started (4.995 -> 5.003 over 11 readings): this run is not learning"
+  },
+  {
+   "scenario": "loss_resets_every_epoch",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 16,
+   "first_check": "repeating",
+   "severity": "warning",
+   "all_checks": [
+    "repeating"
+   ],
+   "message": "loss is repeating the same 5 readings exactly (1.7, 1.5, 1.4, 1.35, 2): the same data is going through the model every time"
+  },
+  {
+   "scenario": "stuck_at_uniform_prediction",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 7,
+   "first_check": "frozen",
+   "severity": "warning",
+   "all_checks": [
+    "frozen",
+    "metric_stagnation",
+    "stagnation"
+   ],
+   "message": "accuracy has been exactly 0.1 for 6 readings"
+  },
+  {
+   "scenario": "diverges_after_real_progress",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 59,
+   "first_check": "divergence",
+   "severity": "warning",
+   "all_checks": [
+    "divergence"
+   ],
+   "message": "loss is climbing, not falling: 1.216 over its first 14 readings, 1.354 over its last 14"
+  },
+  {
+   "scenario": "validation_worse_from_the_first_epoch",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 6,
+   "first_check": "val_regression",
+   "severity": "warning",
+   "all_checks": [
+    "divergence",
+    "overfitting",
+    "val_drift",
+    "val_regression"
+   ],
+   "message": "val_loss has worsened in 4 of its last 4 steps (0.73 -> 0.85)"
+  },
+  {
+   "scenario": "step_time_growing",
+   "tag": "fault",
+   "expected": "any",
+   "verdict": "caught",
+   "epochs": 60,
+   "latency": 16,
+   "first_check": "slowing_down",
+   "severity": "warning",
+   "all_checks": [
+    "slowing_down"
+   ],
+   "message": "step_time has grown 127% over its last 15 readings (0.11 to 0.25): something is accumulating, and the run gets slower every step"
+  },
+  {
+   "scenario": "healthy_cyclical_lr",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_warm_restarts",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_amp_loss_scale",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_curriculum",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_multi_task",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_rl_run",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_val_better_than_train",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_imbalanced_high_accuracy",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [
+    "metric_stagnation"
+   ],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_epoch_boundary_spikes",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 400,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "healthy_short_early_stop",
+   "tag": "healthy",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 12,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
    "scenario": "healthy_late_breakthrough",
    "tag": "debatable",
    "expected": null,
@@ -484,11 +914,34 @@
    "first_check": "suspiciously_perfect",
    "severity": "warning",
    "all_checks": [
-    "frozen",
     "metric_stagnation",
     "suspiciously_perfect"
    ],
    "message": "val_accuracy reached 1 within 4 readings, which usually means the labels are reachable from the inputs"
+  },
+  {
+   "scenario": "healthy_two_fit_calls",
+   "tag": "debatable",
+   "expected": null,
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
+  },
+  {
+   "scenario": "loss_falls_past_zero_forever",
+   "tag": "debatable",
+   "expected": "any",
+   "verdict": "quiet",
+   "epochs": 60,
+   "latency": null,
+   "first_check": null,
+   "severity": null,
+   "all_checks": [],
+   "message": ""
   }
  ]
 }

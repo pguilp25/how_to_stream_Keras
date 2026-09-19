@@ -1,42 +1,74 @@
-# The same 37 runs through PulseCLI._check_for_trouble (the default path)
-# left column: old detector (PULSE_LEGACY_DETECTOR=1)
-scenario                         tag       legacy         engine
-OK nan_midrun                     fault     caught @26     caught
-OK inf_midrun                     fault     caught @31     caught
-OK exploding_loss                 fault     caught @23     caught
-OK diverging_slowly               fault     caught @10     caught
-OK frozen_from_start              fault     caught @6      caught
-OK learns_then_stops              fault     caught @24     caught
-OK gradient_explosion             fault     caught @12     caught
-OK gradient_vanishing             fault     caught @5      caught
-OK lr_jumped_up                   fault     caught @31     caught
-OK overfitting_classic            fault     caught @6      caught
-OK validation_regression          fault     caught @5      caught
-OK oscillating_loss               fault     caught @13     caught
-OK accuracy_at_chance             fault     caught @6      caught
-OK perfect_validation             fault     caught @2      caught
-OK nan_weights                    fault     caught @1      caught
-OK slow_crawl                     fault     caught @10     caught
-OK loss_spike_sustained           fault     caught @26     caught
-OK metric_frozen_while_loss_moves fault     caught @6      caught
-OK healthy_smooth                 healthy   quiet          quiet
-!! healthy_noisy                  healthy   FALSE ALARM    quiet
-!! healthy_converged_flat         healthy   FALSE ALARM    quiet
-OK healthy_warmup                 healthy   quiet          quiet
-!! healthy_lr_schedule            healthy   FALSE ALARM    quiet
-OK healthy_transient_spike        healthy   quiet          quiet
-!! healthy_finetune               healthy   FALSE ALARM    quiet
-OK healthy_short_run              healthy   quiet          quiet
-!! healthy_noisy_validation       healthy   FALSE ALARM    quiet
-!! healthy_gan_oscillation        healthy   FALSE ALARM    quiet
-!! healthy_step_level             healthy   FALSE ALARM    quiet
-OK healthy_custom_names           healthy   quiet          quiet
-OK healthy_missing_values         healthy   quiet          quiet
-OK healthy_tiny_values            healthy   quiet          quiet
-OK healthy_large_values           healthy   quiet          quiet
-OK healthy_late_breakthrough      debatable fires          fires (by design)
-OK healthy_perfect_easy_task      debatable fires          fires (by design)
+# The same 67 runs through the detector that shipped before the switch
+scenario                         tag       legacy         engine
+OK nan_midrun                     fault     caught @26     caught
+OK inf_midrun                     fault     caught @31     caught
+OK exploding_loss                 fault     caught @23     caught
+OK diverging_slowly               fault     caught @10     caught
+OK frozen_from_start              fault     caught @6      caught
+OK learns_then_stops              fault     caught @24     caught
+OK gradient_explosion             fault     caught @12     caught
+OK gradient_vanishing             fault     caught @5      caught
+OK lr_jumped_up                   fault     caught @31     caught
+OK overfitting_classic            fault     caught @6      caught
+OK validation_regression          fault     caught @5      caught
+OK oscillating_loss               fault     caught @13     caught
+OK accuracy_at_chance             fault     caught @6      caught
+OK perfect_validation             fault     caught @2      caught
+OK nan_weights                    fault     caught @1      caught
+OK slow_crawl                     fault     caught @10     caught
+OK loss_spike_sustained           fault     caught @26     caught
+OK metric_frozen_while_loss_moves fault     caught @6      caught
+OK healthy_smooth                 healthy   quiet          quiet
+!! healthy_noisy                  healthy   FALSE ALARM    quiet
+!! healthy_converged_flat         healthy   FALSE ALARM    quiet
+OK healthy_warmup                 healthy   quiet          quiet
+!! healthy_lr_schedule            healthy   FALSE ALARM    quiet
+OK healthy_transient_spike        healthy   quiet          quiet
+!! healthy_finetune               healthy   FALSE ALARM    quiet
+OK healthy_short_run              healthy   quiet          quiet
+!! healthy_noisy_validation       healthy   FALSE ALARM    quiet
+!! healthy_gan_oscillation        healthy   FALSE ALARM    quiet
+!! healthy_step_level             healthy   FALSE ALARM    quiet
+OK healthy_custom_names           healthy   quiet          quiet
+OK healthy_missing_values         healthy   quiet          quiet
+OK healthy_tiny_values            healthy   quiet          quiet
+OK healthy_large_values           healthy   quiet          quiet
+OK loss_collapses_to_zero         fault     caught @21     caught
+OK late_data_leak                 fault     caught @17     caught
+OK lr_decayed_to_zero             fault     caught @26     caught
+OK lr_zero_from_the_start         fault     caught @10     caught
+OK zero_gradient_norm             fault     caught @10     caught
+OK validation_only_nan            fault     caught @21     caught
+OK one_metric_nan                 fault     caught @26     caught
+OK accuracy_collapses_to_prior    fault     caught @20     caught
+OK accuracy_at_chance_while_loss_falls fault     caught @10     caught
+!! negative_loss_climbing         fault     MISSED         caught
+OK negative_loss_frozen           fault     caught @10     caught
+OK oscillation_growing            fault     caught @10     caught
+!! weight_norm_unbounded          fault     MISSED         caught
+OK broken_metric_perfect_but_loss_high fault     caught @2      caught
+OK dataloader_exhausted           fault     caught @19     caught
+OK train_val_gap_enormous         fault     caught @10     caught
+OK loss_resets_every_epoch        fault     caught @12     caught
+OK stuck_at_uniform_prediction    fault     caught @6      caught
+OK diverges_after_real_progress   fault     caught @37     caught
+OK validation_worse_from_the_first_epoch fault     caught @5      caught
+!! step_time_growing              fault     MISSED         caught
+OK healthy_cyclical_lr            healthy   quiet          quiet
+!! healthy_warm_restarts          healthy   FALSE ALARM    quiet
+OK healthy_amp_loss_scale         healthy   quiet          quiet
+OK healthy_curriculum             healthy   quiet          quiet
+OK healthy_multi_task             healthy   quiet          quiet
+OK healthy_rl_run                 healthy   quiet          quiet
+OK healthy_val_better_than_train  healthy   quiet          quiet
+!! healthy_imbalanced_high_accuracy healthy   FALSE ALARM    quiet
+!! healthy_epoch_boundary_spikes  healthy   FALSE ALARM    quiet
+OK healthy_short_early_stop       healthy   quiet          quiet
+OK healthy_late_breakthrough      debatable fires          fires (by design)
+OK healthy_perfect_easy_task      debatable fires          fires (by design)
+OK healthy_two_fit_calls          debatable fires          quiet
+OK loss_falls_past_zero_forever   debatable quiet          quiet
 
-legacy detector (the default path, PulseCLI._check_for_trouble)
-  caught       18/18 broken runs
-  false alarms 7/15 healthy runs
+legacy detector (the default path, PulseCLI._check_for_trouble)
+  caught       36/39 broken runs
+  false alarms 10/25 healthy runs

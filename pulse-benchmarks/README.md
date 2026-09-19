@@ -135,73 +135,104 @@ Pulse's live detection does work on these faults: on a planted
 "~5000× Adam's default step size", fixed it and restarted — with no question
 asked.
 
-### Detection — 37 labelled runs
+### Detection — 67 labelled runs
 
-The two benchmarks above measure fixing. This one measures noticing, which is
-the part Pulse exists for, and it has two halves that are equally load-bearing:
-catching runs that are broken, and leaving runs that are fine alone. A detector
-that interrupts a healthy run gets switched off by its user, and then it detects
-nothing at all — so false alarms are scored here as failures, exactly like misses.
+The two benchmarks above measure fixing. This one measures noticing, which is the part
+Pulse exists for, and it has two halves that are equally load-bearing: catching runs
+that are broken, and leaving runs that are fine alone. A detector that interrupts a
+healthy run gets switched off by its user, and then it detects nothing at all — so
+false alarms are scored here as failures, exactly like misses.
 
-37 labelled training runs, replayed epoch by epoch into a fresh detector: 18
-broken (NaN mid-run, exploding loss, a slow divergence, a frozen loss, vanishing
-gradients, a learning rate jump, overfitting, validation regression, oscillation,
-accuracy stuck at chance, a leaked label, NaN weights, a crawl, a sustained
-spike, a metric frozen while the loss moves), 15 healthy (smooth, noisy, a
-converged run sitting at its floor, warmup, a deliberate LR schedule, one
-transient spike, fine-tuning, a short run, a noisy validation split, a GAN,
-step-level readings, custom metric names, gaps in the history, 1e-7 values,
-5e6 values), and 2 judgement calls reported but not scored either way.
+67 labelled training runs, replayed epoch by epoch into a fresh detector. 39 broken:
+NaN and inf mid-run, exploding loss, a slow divergence, a divergence after thirty good
+epochs, a frozen loss, vanishing and zero gradients, a learning rate jump, a schedule
+that decays to zero, overfitting, validation regression, oscillation, oscillation with
+growing amplitude, accuracy stuck at chance, a leak visible in epoch 1 and a leak that
+takes ten epochs to saturate, NaN weights, a crawl, a sustained spike, a metric frozen
+while the loss moves, an exhausted data iterator repeating the same readings, per-epoch
+state resetting, a model collapsing to the majority class, a loss improving while
+accuracy sits at chance, an unbounded weight norm, a step time that climbs all run, an
+ELBO parked at −3.2, a negative loss going the wrong way. 25 healthy: smooth, noisy,
+converged, warmup, a deliberate LR schedule, a cyclical one, SGDR warm restarts,
+mixed-precision loss scaling (values ×65536), curriculum learning, multi-task losses on
+four different scales, reinforcement learning, a GAN, fine-tuning, validation better
+than train, an imbalanced task where accuracy starts at 0.95, step-level readings,
+per-epoch spikes at each reshuffle, custom metric names, gaps in the history, 1e-7 and
+5e6 values, and a short early-stopped run. Plus 3 judgement calls, reported either way.
 
 | Detector | Caught | False alarms |
 |---|---:|---:|
-| The engine (`pulse_detect`), after this work | **18/18** | **0/15** |
-| What `pulse run` actually used, before | 18/18 | **7/15** |
+| The engine (`pulse_detect`), after this work | **39/39** | **0/25** |
+| What `pulse run` actually used, before | 36/39 | **10/25** |
 
-Pulse had two deterministic detectors. `pulse_detect.DetectionEngine` is the one
-its tests cover — and it was reachable only under `PULSE_MODE=stream`. A normal
-`pulse run` used a second, untested implementation, which flagged a deliberate
-learning-rate drop, a converged run, a fine-tune, a GAN and a noisy validation
-split as problems. The default path now uses the engine
-(`codeyash09/PulseML@d682240`); `PULSE_LEGACY_DETECTOR=1` restores the old one,
-which is how the second row above is still reproducible.
+Pulse had *three* deterministic detectors. `pulse_detect.DetectionEngine` is the one its
+tests cover — and it was reachable only under `PULSE_MODE=stream`. A normal `pulse run`
+used a second, untested implementation, and the Tk dashboard a third. All three paths
+now run the engine (`codeyash09/PulseML@492b56e`); `PULSE_LEGACY_DETECTOR=1` restores
+the old one, which is how the second row above is still reproducible.
 
-Thresholds that are right and thresholds fitted to one lucky curve score the
-same on one draw, so every curve's noise was redrawn 30 times at five
-sensitivities — 5,550 replays:
+Thresholds that are right and thresholds fitted to one lucky curve score the same on
+one draw, so every curve's noise was redrawn 30 times at five sensitivities — 10,050
+replays:
 
 | sensitivity | caught | false alarms |
 |---|---|---|
-| 0.1 | 540/540 (100%) | 3/450 (0.7%) |
-| 0.3 *(default)* | 540/540 (100%) | 4/450 (0.9%) |
-| 0.5 | 540/540 (100%) | 9/450 (2.0%) |
-| 0.7 | 540/540 (100%) | 21/450 (4.7%) |
-| 0.9 | 540/540 (100%) | 89/450 (19.8%) |
+| 0.1 | 1170/1170 (100%) | 3/750 (0.4%) |
+| 0.3 *(default)* | 1170/1170 (100%) | 4/750 (0.5%) |
+| 0.5 | 1170/1170 (100%) | 9/750 (1.2%) |
+| 0.7 | 1170/1170 (100%) | 26/750 (3.5%) |
+| 0.9 | 1170/1170 (100%) | 110/750 (14.7%) |
 
-Recall holds at 100% across the dial while false alarms rise monotonically: the
-dial buys quiet, not detection. Median latency is 13 epochs to the first raise,
-worst 31.
+Recall holds at 100% across the dial while false alarms rise monotonically: the dial
+buys quiet, not detection. Median latency is 16 epochs to the first raise.
 
 Two more suites, because a detector's failure modes are not all statistical:
 
-- **41 hostile inputs** — `None` and strings in the history, NaN from the first
-  reading, 1e300, 200 variables, unicode names, a 50k-step history: 41/41. Three
-  of these were real crashes when first run (`OverflowError` from squaring a
-  1e300 loss, an `AttributeError` on a malformed tensor summary), and a detector
-  that raises takes the training run down with it. The 50k-step history also cost
-  1.6s per update, out of the training loop.
-- **8 wiring checks** — Keras hands loss and `val_loss` to a callback's `logs`
-  dict, never as locals. Sixteen Deep4ge runs detected nothing for exactly this
-  reason, with every check working correctly. These drive the real ingestion
-  function with the log dicts Keras emits and then ask the real detector: 8/8.
+- **63 hostile inputs** — `None` and strings in the history, NaN from the first reading,
+  1e300, 200 variables, unicode names, a 50k-step history, a history that shrinks, a
+  variable that disappears mid-run, four ranks reporting the same metric, steps that go
+  backwards, an agent-supplied baseline of NaN, a thousand identical updates, and every
+  dtype a training loop reports. Four of these were real crashes or hangs when first
+  run, and a detector that raises takes the training run down with it.
+- **8 wiring checks** — Keras hands loss and `val_loss` to a callback's `logs` dict,
+  never as locals. Sixteen Deep4ge runs detected nothing for exactly this reason, with
+  every check working correctly. These drive the real ingestion function with the log
+  dicts Keras emits and then ask the real detector.
 
 ## What this surfaced in Pulse
+
+### Round 4 (`codeyash09/PulseML@492b56e`, `@180111a`) -- widening the net
+
+Going from 37 labelled runs to 67 found six failure modes that were missed outright and
+two healthy runs that were flagged.
+
+| Problem | Effect |
+|---|---|
+| float32 readings were discarded entirely | `isinstance(v, (int, float))` is true for numpy's float64, which subclasses float, and false for float32 — the Keras default, and everything under mixed precision. Every reading of such a run was dropped, so **no check ran at all**, including the NaN check. Torch scalars, 0-dim arrays and Decimals went the same way |
+| Nothing noticed the same readings coming round again | An exhausted iterator being re-used, or per-epoch state resetting: bit-for-bit repetition that cannot happen by chance |
+| Nothing noticed a run getting slower | A step time climbing all run is a leak that ends as an out-of-memory kill hours later. It is not a loss, a score, a norm or a learning rate, so nothing looked at it |
+| A steadily growing weight norm never tripped the spike test | The recent average it was compared against grew with it |
+| A leak that took ten epochs to saturate was invisible | "Suspiciously perfect" only looked at a metric's first six readings |
+| A loss improving while accuracy sat at chance was INFO | Shuffled labels. The loss is optimising something the metric does not measure, and the fix is never in the optimiser |
+| Every ratio test changed direction with the sign | An ELBO or a log-likelihood sitting flat at −3.2 forever passed `end >= start * 0.98` trivially |
+| A slope alone flagged anything that oscillates | Over less than one period a sine is a straight line: an RL policy loss measured 6 standard errors and explained 75% of its own variance while going nowhere. Real divergences measured 16 to 59, explaining over 90% |
+| A quantised metric read as frozen | 197 right out of 200 is exactly 0.985 every epoch. That is the score having converged, not the run having died |
+| A third detector in the Tk dashboard | Migrated to the engine with the other two |
+
+And the one bug Pulse could not see from inside a training script at all: a **syntax
+error in the script itself**. Python compiles the whole file before `auto_track()` on
+line 2 ever runs. `pulse run` had a repair path for it that did not work — applying the
+fix handed control to the restart machinery, which re-ran a temporary copy and skipped
+the rest, so the user's file stayed broken with the fix stranded in a temp file; a rate
+limit was reported as a failed repair; and with no terminal it stopped at "setup was not
+completed". Fixed, and verified end to end: the file is now repaired, written back, and
+compiles on its own.
 
 ### Round 3 (`codeyash09/PulseML@d682240`) -- detection
 
 | Problem | Effect |
 |---|---|
-| Two detectors, and the tested one was not the one running | `pulse run` used `PulseCLI._check_for_trouble`; the benchmarked engine needed `PULSE_MODE=stream`. 7 of 15 healthy runs interrupted |
+| Two detectors, and the tested one was not the one running | `pulse run` used `PulseCLI._check_for_trouble`; the benchmarked engine needed `PULSE_MODE=stream`. 7 of 15 healthy runs interrupted (10 of 25 on the wider set) |
 | No check for a loss that climbs | A run diverging steadily without ever spiking was caught 15 times in 30 — by luck, through other checks |
 | "This run is not learning" was a coin flip on a noisy curve | It disqualified itself if a single reading had ever dipped below the opening, which noise does |
 | Oscillation was a white-noise detector | It asked for ≥12 direction changes in 19 readings; iid noise flips about two in three |
@@ -301,9 +332,9 @@ harness/junobench/   nb2py.py (notebook -> script), run.py (baseline/pulse/verif
                      trace/ (logs every model call), cc/ (Claude Code runner)
 harness/deep4ge/     make_instances.py (fault injection + screening), run.py,
                      driver.py (asks Pulse's agent after training), cc/
-harness/detection/   scenarios.py (37 labelled runs), run_detectbench.py (score),
+harness/detection/   scenarios.py (67 labelled runs), run_detectbench.py (score),
                      sweep.py (redraw the noise, turn the dial), edge_cases.py
-                     (hostile input), wiring.py (Keras logs reach the detector),
+                     (63 hostile inputs), wiring.py (Keras logs reach the detector),
                      legacy.py (the same runs through the default path)
 results/junobench/   per-run verify_results.json + per-case diffs
 results/deep4ge/     per-run score_results.json + diffs, screening report,

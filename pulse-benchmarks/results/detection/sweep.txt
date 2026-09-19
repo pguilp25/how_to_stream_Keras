@@ -1,24 +1,28 @@
-# 30 redraws of every curve's noise x 5 sensitivities (5,550 replays)
-30 seeds x 5 sensitivities
+# 67 labelled runs x 30 redraws of their noise x 5 sensitivities
+30 seeds x 5 sensitivities
 
-sensitivity 0.10:  caught 540/540 (100.0%)   false alarms 3/450 (0.7%)
-    healthy_noisy_validation false-alarmed 2/30
-    healthy_step_level false-alarmed 1/30
-sensitivity 0.30:  caught 540/540 (100.0%)   false alarms 4/450 (0.9%)
-    healthy_noisy_validation false-alarmed 2/30
-    healthy_step_level false-alarmed 2/30
-sensitivity 0.50:  caught 540/540 (100.0%)   false alarms 9/450 (2.0%)
-    healthy_noisy_validation false-alarmed 3/30
-    healthy_step_level false-alarmed 6/30
-sensitivity 0.70:  caught 540/540 (100.0%)   false alarms 21/450 (4.7%)
-    healthy_converged_flat false-alarmed 2/30
-    healthy_noisy_validation false-alarmed 6/30
-    healthy_step_level false-alarmed 13/30
-sensitivity 0.90:  caught 540/540 (100.0%)   false alarms 89/450 (19.8%)
-    healthy_converged_flat false-alarmed 5/30
-    healthy_finetune false-alarmed 30/30
-    healthy_lr_schedule false-alarmed 30/30
-    healthy_noisy_validation false-alarmed 7/30
-    healthy_step_level false-alarmed 17/30
+sensitivity 0.10:  caught 1170/1170 (100.0%)   false alarms 3/750 (0.4%)
+    healthy_noisy_validation false-alarmed 2/30
+    healthy_step_level false-alarmed 1/30
+sensitivity 0.30:  caught 1170/1170 (100.0%)   false alarms 4/750 (0.5%)
+    healthy_noisy_validation false-alarmed 2/30
+    healthy_step_level false-alarmed 2/30
+sensitivity 0.50:  caught 1170/1170 (100.0%)   false alarms 9/750 (1.2%)
+    healthy_noisy_validation false-alarmed 3/30
+    healthy_step_level false-alarmed 6/30
+sensitivity 0.70:  caught 1170/1170 (100.0%)   false alarms 26/750 (3.5%)
+    healthy_converged_flat false-alarmed 2/30
+    healthy_epoch_boundary_spikes false-alarmed 5/30
+    healthy_noisy_validation false-alarmed 6/30
+    healthy_step_level false-alarmed 13/30
+sensitivity 0.90:  caught 1170/1170 (100.0%)   false alarms 110/750 (14.7%)
+    healthy_converged_flat false-alarmed 5/30
+    healthy_epoch_boundary_spikes false-alarmed 21/30
+    healthy_finetune false-alarmed 30/30
+    healthy_lr_schedule false-alarmed 30/30
+    healthy_noisy_validation false-alarmed 7/30
+    healthy_step_level false-alarmed 17/30
 
-14 scenario/sensitivity pairs are not unanimous
+16 scenario/sensitivity pairs are not unanimous
+
+[exited with code 0]
